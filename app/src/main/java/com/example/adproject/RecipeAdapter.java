@@ -23,17 +23,36 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
 
     }
+    public interface OnItemClickListener {
+        void onItemClick(Recipe recipe);
+    }
+
+
+
+    private OnItemClickListener onItemClickListener;
+
+    // 构造函数中添加监听器参数
+    public RecipeAdapter(List<Recipe> recipes, OnItemClickListener listener) {
+        mRecipeList = recipes;
+        onItemClickListener = listener;
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
+        private OnItemClickListener listener;
         public TextView descriptionTextView;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.recipe_name);
             descriptionTextView = itemView.findViewById(R.id.recipe_description);
+            this.listener = listener; // 初始化成员变量
+
+
         }
     }
+
 
     public RecipeAdapter(List<Recipe> recipes) {
         mRecipeList = recipes;
@@ -44,23 +63,29 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        // Inflate the custom layout
         View recipeView = inflater.inflate(R.layout.recipe_item, parent, false);
 
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(recipeView);
-        return viewHolder;
+        return new ViewHolder(recipeView, onItemClickListener);
     }
+
 
     @Override
-    public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
-        // Get the data model based on position
-        Recipe recipe = mRecipeList.get(position);
-
-        // Set item views based on your views and data model
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final Recipe recipe = mRecipeList.get(position);
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
+
+        // 在这里设置点击监听器
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(recipe); // 正确地传递Recipe对象
+                }
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
