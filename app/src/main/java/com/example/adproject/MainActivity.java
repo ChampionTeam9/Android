@@ -22,8 +22,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new LoginFragment())
+                    .commit();
+        }
         mRecyclerView = findViewById(R.id.recyclerView);
         search=findViewById(R.id.searchEditText);
 
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadRecipes() {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.249.31.248:3000/getRecipeData";
+        String url = "http://10.0.2.2:3000/getRecipeData";
 
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -125,4 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+
+
 }
