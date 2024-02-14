@@ -27,7 +27,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        ImageView loginIcon = view.findViewById(R.id.loginIcon);
+        ImageView loginIcon = view.findViewById(R.id.loginicon);
         loginIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment {
         // 从 SharedPreferences 中读取用户名，默认值为 null
         String username = sharedPreferences.getString("username", null);
         // 如果用户名不为 null，即用户已经登录了，那么跳转到 MyProfile
-        if(username== null){ 
+        if(username== null){
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
         }

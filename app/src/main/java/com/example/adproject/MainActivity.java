@@ -1,16 +1,21 @@
 package com.example.adproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.adproject.DetailActivity;
+import com.example.adproject.LoginFragment;
+import com.example.adproject.Recipe;
+import com.example.adproject.RecipeAdapter;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,50 +27,58 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
-    private EditText search;
+    private EditText searchEditText;
     private List<Recipe> mAllRecipes = new ArrayList<>();
-
     private List<Recipe> mRecipes = new ArrayList<>();
+    private BottomSheetBehavior<View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        // 初始化Fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, new LoginFragment())
                     .commit();
         }
-        mRecyclerView = findViewById(R.id.recyclerView);
-        search=findViewById(R.id.searchEditText);
 
+        // 在 MainActivity 类中找到底部表单的视图
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+
+// 使用 BottomSheetBehavior 进行设置
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setDraggable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
+        // 初始化RecyclerView和搜索框
+        mRecyclerView = findViewById(R.id.recyclerView);
+        searchEditText = findViewById(R.id.searchEditText);
         Button searchButton = findViewById(R.id.searchButton);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-               String searchString=search.getText().toString();
+                String searchString = searchEditText.getText().toString();
                 searchRecipes(searchString);
             }
         });
 
-        // 此处初始化Adapter，并传入空的食谱列表和点击事件的处理
+        // 初始化Adapter
         mAdapter = new RecipeAdapter(mRecipes, new RecipeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Recipe recipe) {
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("Recipe", recipe); // 确保Recipe类实现了Serializable接口
+                detailIntent.putExtra("Recipe", recipe); // 使用Parcelable传递对象
                 startActivity(detailIntent);
             }
         });
@@ -74,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
         loadRecipes(); // 加载食谱数据
     }
+
+    // 其他方法保持不变...
+
     private void searchRecipes(String query) {
         List<Recipe> filteredRecipes = new ArrayList<>();
         for (Recipe recipe : mAllRecipes) { // 应该使用mAllRecipes进行搜索

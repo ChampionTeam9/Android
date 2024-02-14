@@ -28,7 +28,9 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         // 获取从MainActivity传递的食谱对象
-        Recipe recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
+
+        Intent intent = getIntent();
+        Recipe recipe = intent.getParcelableExtra("Recipe");
 
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
