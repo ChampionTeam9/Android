@@ -9,50 +9,223 @@
 
     tools:context=".DetailActivity">
 
-    <!-- 返回按钮 -->
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#CCCCCC"
-        android:text="Back"
-        android:textColor="#666666"
-        android:visibility="visible" />
+    <ImageView
+        android:id="@+id/recipe_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/download"/>
 
-    <!-- 第一个文本内容卡片 -->
-    <androidx.cardview.widget.CardView
+    <TextView
+        android:id="@+id/recipe_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="#FFFFFF"
-        app:cardCornerRadius="8dp">
+        android:text="Recipe Name"
+        android:textSize="24sp"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:attr/ratingBarStyleSmall"
+            android:scaleX=".6"
+            android:scaleY=".6"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
+            android:layout_marginBottom="-26dp"
+            android:layout_marginRight="-76dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="3.5"/>
 
         <TextView
-            android:id="@+id/detail_recipe_name"
-            android:layout_width="match_parent"
+            android:id="@+id/recipe_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:text="3.5"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/recipe_numberOfRating"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginRight="16dp"
+            android:text="3 Reviews"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/recipe_numberOfSaved"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="1 Saved"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/recipe_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recipe Description"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Recipe Name"
-            android:textSize="24sp"
+            android:text="Created By: "
+            android:textSize="18sp"
             android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-    <!-- 第二个文本内容卡片 -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="#FFFFFF"
-        app:cardCornerRadius="8dp">
 
         <TextView
-            android:id="@+id/detail_recipe_description"
-            android:layout_width="match_parent"
+            android:id="@+id/recipe_member_username"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textSize="16sp" />
-    </androidx.cardview.widget.CardView>
+            android:text="username"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recipe Id: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipe_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="recipeId"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submitted On: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipe_submittedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="submittedDate"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tags: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipe_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tags"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serving Size: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipe_servings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:textSize="18sp"
+            android:layout_marginRight="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preperation Time: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipe_preparationTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="60 mins"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingredients"
+        android:textSize="22sp"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerIngredients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Steps"
+        android:textSize="22sp"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold" />
 
 </LinearLayout>
