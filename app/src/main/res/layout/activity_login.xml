@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <!-- 将 EditText 控件替换为 LoginFragment 中定义的 usernameEditText -->
     <EditText
         android:id="@+id/username"
         android:layout_width="0dp"
@@ -19,6 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
+    <!-- 将 EditText 控件替换为 LoginFragment 中定义的 passwordEditText -->
     <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
@@ -32,6 +34,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
+    <!-- 将 Button 控件替换为 LoginFragment 中定义的 loginButton -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
@@ -44,6 +47,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
+    <!-- 将 Button 控件替换为 LoginFragment 中定义的 backButton -->
     <Button
         android:id="@+id/back_button"
         android:layout_width="0dp"
