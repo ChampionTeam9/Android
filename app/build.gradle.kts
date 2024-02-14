@@ -31,6 +31,9 @@ android {
 dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     //implementation ("mysql:mysql-connector-java:8.0.23")
+    implementation ("com.google.android.material:material:1.11.0")
+    implementation ("com.google.android.material:material:<latest-version>")
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
