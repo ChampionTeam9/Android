@@ -8,6 +8,11 @@
     <string name="welcome_message">Welcome!</string>
     <string name="login_icon_description">user</string>
     <string name="health_recipe">Health Recipe</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_favorites">favorites</string>
+    <string name="menu_profile">Profile</string>
+    <string name="nav_header_desc">Header</string>
 
 
 </resources>
