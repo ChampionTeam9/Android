@@ -1,63 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:background="#F0F0F0"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".DetailActivity">
 
-    <!-- 将 EditText 控件替换为 LoginFragment 中定义的 usernameEditText -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Username: "
+        android:textSize="20sp"/>
+
     <EditText
         android:id="@+id/username"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginBottom="16dp"/>
 
-    <!-- 将 EditText 控件替换为 LoginFragment 中定义的 passwordEditText -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password: "
+        android:textSize="20sp"/>
+
     <EditText
         android:id="@+id/password"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/username"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginBottom="16dp"/>
 
-    <!-- 将 Button 控件替换为 LoginFragment 中定义的 loginButton -->
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:orientation="horizontal">
 
-    <!-- 将 Button 控件替换为 LoginFragment 中定义的 backButton -->
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/back"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        <!-- 将 Button 控件替换为 LoginFragment 中定义的 loginButton -->
+        <Button
+            android:id="@+id/loginButton"
+            style="@style/ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:layout_marginRight="16dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- 将 Button 控件替换为 LoginFragment 中定义的 backButton -->
+        <Button
+            android:id="@+id/back_button"
+            style="@style/ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back" />
+
+    </LinearLayout>
+
+</LinearLayout>
