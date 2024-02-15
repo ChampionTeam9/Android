@@ -8,7 +8,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -57,6 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView tagsTextView=findViewById(R.id.recipe_tags);
         TextView servingsTextView=findViewById(R.id.recipe_servings);
         TextView preparationTimeTextView=findViewById(R.id.recipe_preparationTime);
+        ImageView imageView=findViewById(R.id.recipe_image);
 
         if (recipe != null) {
             nameTextView.setText(recipe.getName());
@@ -69,6 +73,9 @@ public class DetailActivity extends AppCompatActivity {
             tagsTextView.setText(TextUtils.join(", ", recipe.getTags()));
             servingsTextView.setText(String.valueOf(recipe.getServings()));
             preparationTimeTextView.setText(recipe.getPreparationTime() + " mins");
+            String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
+            Picasso.get().load(imageUrl).into(imageView);
+
         }
 
 
