@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">ADProject</string>
 
-    <string name="username">Username</string>
-    <string name="password">Password</string>
+    <string name="username">Enter your username</string>
+    <string name="password">Enter your password</string>
     <string name="login">Login</string>
     <string name="back">Back</string>
     <string name="welcome_message">Welcome!</string>
