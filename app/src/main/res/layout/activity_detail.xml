@@ -11,7 +11,6 @@
         android:background="#F0F0F0"
         android:orientation="vertical"
         android:padding="16dp"
-
         tools:context=".DetailActivity">
 
         <ImageView
