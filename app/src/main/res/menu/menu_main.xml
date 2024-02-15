@@ -4,6 +4,11 @@
         android:id="@+id/action_example"
         android:title="Example"
         app:showAsAction="ifRoom" />
+    <include
+        layout="@layout/toolbar_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </menu>
 
 
