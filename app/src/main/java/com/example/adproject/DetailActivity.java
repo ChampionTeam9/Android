@@ -1,6 +1,8 @@
 package com.example.adproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +40,13 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Recipe recipe = intent.getParcelableExtra("Recipe");
 
+        // 找到步骤RecyclerView
+        RecyclerView stepsRecyclerView = findViewById(R.id.recycler_steps);
+        // 设置布局管理器
+        stepsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // 创建并设置适配器
+        StepsAdapter stepsAdapter = new StepsAdapter(recipe.getSteps());
+        stepsRecyclerView.setAdapter(stepsAdapter);
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
 
@@ -61,6 +70,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView servingsTextView=findViewById(R.id.recipe_servings);
         TextView preparationTimeTextView=findViewById(R.id.recipe_preparationTime);
         ImageView imageView=findViewById(R.id.recipe_image);
+        //TextView stepsTextView=findViewById();
 
         if (recipe != null) {
             nameTextView.setText(recipe.getName());

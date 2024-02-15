@@ -94,6 +94,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
 
+
+
         // 构建图片 URL 并使用 Picasso 加载图片
         String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
         Picasso.get().load(imageUrl).into(holder.imageView);
