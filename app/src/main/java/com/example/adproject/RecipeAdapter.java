@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adproject.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,18 +50,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
-        private OnItemClickListener listener;
         public TextView descriptionTextView;
+        public ImageView imageView; // 添加 ImageView 的引用
+
+        private OnItemClickListener listener;
 
         public ViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.recipe_name);
             descriptionTextView = itemView.findViewById(R.id.recipe_description);
-            this.listener = listener; // 初始化成员变量
-
-
+            imageView = itemView.findViewById(R.id.recipe_image); // 初始化 ImageView
+            this.listener = listener;
         }
     }
+
 
 
     public RecipeAdapter(List<Recipe> recipes) {
@@ -86,16 +90,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
 
-        // 在这里设置点击监听器
+        // 构建图片 URL 并使用 Picasso 加载图片
+        String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
+        Picasso.get().load(imageUrl).into(holder.imageView);
+
+        // 设置点击监听器
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(recipe); // 正确地传递Recipe对象
+                    onItemClickListener.onItemClick(recipe);
                 }
             }
         });
     }
+
 
 
     @Override
