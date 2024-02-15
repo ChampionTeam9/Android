@@ -11,8 +11,8 @@
     <!-- 主内容布局 -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black">
+        android:layout_height="match_parent">
+<!--        android:background="@color/white">-->
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
