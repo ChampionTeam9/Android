@@ -1,6 +1,7 @@
 package com.example.adproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     // 新增追加数据的方法
     public void appendRecipes(List<Recipe> newRecipes) {
+        Log.d("RecipeAdapter", "Appending recipes: " + newRecipes.size());
         int startPosition = this.mRecipeList.size(); // 获取追加前的数据量
         this.mRecipeList.addAll(newRecipes); // 追加新数据
         notifyItemRangeInserted(startPosition, newRecipes.size()); // 仅通知追加的数据部分更新
     }
+
     // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
 
     public interface OnItemClickListener {
@@ -87,8 +90,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Recipe recipe = mRecipeList.get(position);
+        Log.d("RecipeAdapter", "Binding view holder for position: " + position);
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
+
+
 
         // 构建图片 URL 并使用 Picasso 加载图片
         String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();

@@ -1,6 +1,8 @@
 package com.example.adproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +10,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -35,6 +40,13 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Recipe recipe = intent.getParcelableExtra("Recipe");
 
+        // 找到步骤RecyclerView
+        RecyclerView stepsRecyclerView = findViewById(R.id.recycler_steps);
+        // 设置布局管理器
+        stepsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // 创建并设置适配器
+        StepsAdapter stepsAdapter = new StepsAdapter(recipe.getSteps());
+        stepsRecyclerView.setAdapter(stepsAdapter);
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
 
@@ -57,6 +69,8 @@ public class DetailActivity extends AppCompatActivity {
         TextView tagsTextView=findViewById(R.id.recipe_tags);
         TextView servingsTextView=findViewById(R.id.recipe_servings);
         TextView preparationTimeTextView=findViewById(R.id.recipe_preparationTime);
+        ImageView imageView=findViewById(R.id.recipe_image);
+        //TextView stepsTextView=findViewById();
 
         if (recipe != null) {
             nameTextView.setText(recipe.getName());
@@ -69,6 +83,9 @@ public class DetailActivity extends AppCompatActivity {
             tagsTextView.setText(TextUtils.join(", ", recipe.getTags()));
             servingsTextView.setText(String.valueOf(recipe.getServings()));
             preparationTimeTextView.setText(recipe.getPreparationTime() + " mins");
+            String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
+            Picasso.get().load(imageUrl).into(imageView);
+
         }
 
 

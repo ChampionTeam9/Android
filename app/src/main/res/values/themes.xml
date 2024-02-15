@@ -6,5 +6,8 @@
         <item name="colorPrimary">@color/custom_green</item>
     </style>
 
-    <style name="Theme.ADProject" parent="Base.Theme.ADProject" />
+    <style name="Theme.ADProject" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
 </resources>
