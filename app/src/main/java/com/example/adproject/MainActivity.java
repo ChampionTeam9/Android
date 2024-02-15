@@ -6,16 +6,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.adproject.DetailActivity;
-import com.example.adproject.LoginFragment;
-import com.example.adproject.Recipe;
-import com.example.adproject.RecipeAdapter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
@@ -40,12 +39,26 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Recipe> mAllRecipes = new ArrayList<>();
     private List<Recipe> mRecipes = new ArrayList<>();
+
     private BottomSheetBehavior<View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+//
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+        // 可选：如果您希望 Toolbar 有返回键
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false); // 如果不想显示原始标题
+
+        // 设置 Toolbar 标题或图标等
+//        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+//        toolbarTitle.setText("您的标题");
 
 
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -61,21 +74,21 @@ public class MainActivity extends AppCompatActivity {
 
                     // 如果没有正在加载，并且可见项+第一个可见项的位置>=总项数，说明滑动到了底部
                     if (!isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= mPageSize) {
+                            && firstVisibleItemPosition >= 0 && totalItemCount >= mPageSize) {
+                        Log.d("MainActivity", "Loading more items");
                         loadRecipes();
-                        isLoading = true; // 标记为正在加载
+                        isLoading = true;
                     }
+
                 }
             }
         });
 
 
-
         // 初始化Fragment
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new LoginFragment()).commit();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new LoginFragment()).commit();
+//        }
 
         // 在 MainActivity 类中找到底部表单的视图
         View bottomSheet = findViewById(R.id.bottom_sheet);
@@ -129,9 +142,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private int mCurrentPage = 0; // 当前页码
-    private int mPageSize = 10; // 每页加载的数据量
+    private int mPageSize = 30; // 每页加载的数据量
 
     private void loadRecipes() {
+        Log.d("MainActivity", "loadRecipes called, currentPage: " + mCurrentPage);
         if (isLoading) { // 如果当前正在加载，直接返回
             return;
         }
@@ -142,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
@@ -151,25 +166,29 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 JSONArray jsonArray = new JSONArray(responseData);
+                                Log.d("MainActivity", "Number of new items: " + jsonArray.length()); // 添加日志输出
                                 List<Recipe> newRecipes = new ArrayList<>();
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonRecipe = jsonArray.getJSONObject(i);
                                     Recipe recipe = Recipe.fromJson(jsonRecipe);
                                     newRecipes.add(recipe);
+
                                 }
-                                mAdapter.appendRecipes(newRecipes); // 追加新数据
-                                mCurrentPage++; // 准备加载下一页
+                                Log.d("MainActivity", "Size of newRecipes after adding: " + newRecipes.size()); // 添加日志输出
+                                mAdapter.appendRecipes(newRecipes);
+                                mCurrentPage++;
                             } catch (JSONException e) {
                                 Log.e("MainActivity", "JSON parsing error: " + e.getMessage());
                             } finally {
-                                isLoading = false; // 重置加载状态
+                                isLoading = false;
                             }
                         }
                     });
                 } else {
-                    isLoading = false; // 请求失败也需要重置加载状态
+                    isLoading = false;
                 }
             }
+
 
             @Override
             public void onFailure(Call call, IOException e) {
