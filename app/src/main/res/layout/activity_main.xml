@@ -92,7 +92,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/navigation_menu" /> <!-- 可选: 添加头部布局 -->
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/navigation_menu"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

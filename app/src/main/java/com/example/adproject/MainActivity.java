@@ -1,19 +1,19 @@
 package com.example.adproject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,47 +44,69 @@ public class MainActivity extends AppCompatActivity {
     private List<Recipe> mAllRecipes = new ArrayList<>();
     private List<Recipe> mRecipes = new ArrayList<>();
 
-    private BottomSheetBehavior<View> bottomSheetBehavior;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 设置 DrawerLayout 和 NavigationView
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView usernameTextView = headerView.findViewById(R.id.nav_header_title); // 头部布局
+        MenuItem loginMenuItem = navigationView.getMenu().findItem(R.id.nav_login); // 假设菜单项的ID为nav_login
+
+        SharedPreferences prefs = getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+        boolean isLoggedIn;
+        String username = prefs.getString("username", "Guest");
+        if (username == "Guest") {
+            isLoggedIn = false;
+        } else {
+            isLoggedIn = true;
+        }
+
+        // 更新标题和菜单项
+        if (isLoggedIn) {
+            // 用户已登录，更新标题为用户名，更改菜单项为"Logout"
+            Log.d("Login", "successful");
+
+            usernameTextView.setText(username);
+            loginMenuItem.setTitle("Logout");
+            loginMenuItem.setIcon(R.drawable.ic_logout); // 假设您有一个表示登出的图标资源
+        } else {
+            // 用户未登录，将标题设置为"Guest"，菜单项为"Login"
+            Log.d("login", "fail");
+            usernameTextView.setText("Guest");
+            loginMenuItem.setTitle("Login");
+            loginMenuItem.setIcon(R.drawable.ic_login); // 假设您有一个表示登录的图标资源
+        }
 
         // 设置 NavigationView 的选择监听器
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                // 关闭左滑菜单
-                drawer.closeDrawer(GravityCompat.START);
 
-                // 检查被点击的菜单项ID
-                if (menuItem.getItemId() == R.id.nav_login) {
-                    // 启动 LoginActivity 或显示登录对话框
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_login) {
+                if (isLoggedIn) {
+                    // 处理登出逻辑
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("isLoggedIn", false);
+                    editor.remove("username");
+                    editor.apply();
+                    // 更新UI
+                    usernameTextView.setText("Guest");
+                    item.setTitle("Login");
+                    item.setIcon(R.drawable.ic_login);
+                    // 重新加载Activity以更新UI
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                } else {
+                    // 启动登录Activity
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
-                // 可以根据需要处理其他菜单项
-
-                return true;
             }
+            return true;
         });
 
-//
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
-        // 可选：如果您希望 Toolbar 有返回键
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false); // 如果不想显示原始标题
-
-        // 设置 Toolbar 标题或图标等
-//        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-//        toolbarTitle.setText("您的标题");
 
 
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -105,25 +127,17 @@ public class MainActivity extends AppCompatActivity {
                         loadRecipes();
                         isLoading = true;
                     }
-
                 }
             }
         });
-
-
-        // 初始化Fragment
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new LoginFragment()).commit();
-//        }
 
         // 在 MainActivity 类中找到底部表单的视图
         View bottomSheet = findViewById(R.id.bottom_sheet);
 
         // 使用 BottomSheetBehavior 进行设置
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setDraggable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
 
         // 初始化RecyclerView和搜索框
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -153,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         loadRecipes(); // 加载食谱数据
     }
 
-    // 其他方法保持不变...
 
     private void searchRecipes(String query) {
         List<Recipe> filteredRecipes = new ArrayList<>();
@@ -165,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         // 更新适配器数据，但不修改mRecipes或mAllRecipes
         mAdapter.updateRecipes(filteredRecipes);
     }
-
 
     private int mCurrentPage = 0; // 当前页码
     private int mPageSize = 30; // 每页加载的数据量
@@ -223,6 +235,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

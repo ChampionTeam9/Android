@@ -1,12 +1,10 @@
 package com.example.adproject;
 
-
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,10 +103,10 @@ public class LoginActivity extends AppCompatActivity {
                         public void run() {
                             // Toast消息通知用户登录成功
                             Toast.makeText(LoginActivity.this, "登录成功，用户名：" + username, Toast.LENGTH_SHORT).show();
-
                             // 保存用户名到SharedPreferences
                             SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
+                            Log.d("username",username);
                             editor.putString("username", username); // 确保这里的username是有效的用户名字符串
                             editor.apply();
 
@@ -130,19 +128,5 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
     }
-
-    private String parseUsername(String responseData) {
-        try {
-            JSONObject jsonObject = new JSONObject(responseData);
-            return jsonObject.getString("username");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "fail"; // 解析失败，返回null
-        }
-    }
-
 }
