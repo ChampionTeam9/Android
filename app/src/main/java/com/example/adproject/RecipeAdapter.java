@@ -16,13 +16,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private List<Recipe> mRecipeList; // 使用Recipe对象列表
 
+    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
     public void updateRecipes(List<Recipe> recipes) {
-            mRecipeList.clear();
-            mRecipeList.addAll(recipes);
-            notifyDataSetChanged();
-
-
+        mRecipeList.clear();
+        mRecipeList.addAll(recipes);
+        notifyDataSetChanged();
     }
+
+    // 新增追加数据的方法
+    public void appendRecipes(List<Recipe> newRecipes) {
+        int startPosition = this.mRecipeList.size(); // 获取追加前的数据量
+        this.mRecipeList.addAll(newRecipes); // 追加新数据
+        notifyItemRangeInserted(startPosition, newRecipes.size()); // 仅通知追加的数据部分更新
+    }
+    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
+
     public interface OnItemClickListener {
         void onItemClick(Recipe recipe);
     }

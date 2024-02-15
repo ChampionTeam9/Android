@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
     private EditText searchEditText;
+    private boolean isLoading = false;
+
     private List<Recipe> mAllRecipes = new ArrayList<>();
     private List<Recipe> mRecipes = new ArrayList<>();
     private BottomSheetBehavior<View> bottomSheetBehavior;
@@ -44,17 +47,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int visibleItemCount = layoutManager.getChildCount(); // 当前在屏幕上可见的项数
+                    int totalItemCount = layoutManager.getItemCount(); // 总数据项数
+                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition(); // 第一个可见项的位置
+
+                    // 如果没有正在加载，并且可见项+第一个可见项的位置>=总项数，说明滑动到了底部
+                    if (!isLoading && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                            && totalItemCount >= mPageSize) {
+                        loadRecipes();
+                        isLoading = true; // 标记为正在加载
+                    }
+                }
+            }
+        });
+
+
+
         // 初始化Fragment
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, new LoginFragment())
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new LoginFragment()).commit();
         }
 
         // 在 MainActivity 类中找到底部表单的视图
         View bottomSheet = findViewById(R.id.bottom_sheet);
 
-// 使用 BottomSheetBehavior 进行设置
+        // 使用 BottomSheetBehavior 进行设置
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setDraggable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -102,15 +128,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private int mCurrentPage = 0; // 当前页码
+    private int mPageSize = 10; // 每页加载的数据量
+
     private void loadRecipes() {
+        if (isLoading) { // 如果当前正在加载，直接返回
+            return;
+        }
+        isLoading = true; // 标记开始加载数据
+
         OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2:3000/getRecipeData";
+        String url = "http://10.0.2.2:8080/api/getRecipeData?start=" + (mCurrentPage * mPageSize) + "&limit=" + mPageSize;
 
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                // 这是在MainActivity类中的网络请求回调内
                 if (response.isSuccessful()) {
                     final String responseData = response.body().string();
                     runOnUiThread(new Runnable() {
@@ -118,38 +151,33 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 JSONArray jsonArray = new JSONArray(responseData);
-                                List<Recipe> recipes = new ArrayList<>();
+                                List<Recipe> newRecipes = new ArrayList<>();
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonRecipe = jsonArray.getJSONObject(i);
-                                    Recipe recipe = Recipe.fromJson(jsonRecipe); // 使用静态工厂方法
-                                    recipes.add(recipe);
+                                    Recipe recipe = Recipe.fromJson(jsonRecipe);
+                                    newRecipes.add(recipe);
                                 }
-                                // 更新完整的食谱列表和当前显示的食谱列表
-                                mAllRecipes.clear();
-                                mAllRecipes.addAll(recipes);
-                                mAdapter.updateRecipes(recipes); // 更新适配器数据
-                                mRecipes.clear();
-                                mRecipes.addAll(recipes); // 保持mRecipes为最新数据
+                                mAdapter.appendRecipes(newRecipes); // 追加新数据
+                                mCurrentPage++; // 准备加载下一页
                             } catch (JSONException e) {
                                 Log.e("MainActivity", "JSON parsing error: " + e.getMessage());
+                            } finally {
+                                isLoading = false; // 重置加载状态
                             }
                         }
                     });
-
+                } else {
+                    isLoading = false; // 请求失败也需要重置加载状态
                 }
-
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("MainActivity", "Request failed: " + e.getMessage());
+                isLoading = false; // 网络请求失败也需要重置加载状态
             }
-
-
-
         });
     }
-
 
 
 }
