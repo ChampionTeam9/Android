@@ -5,12 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -70,14 +72,24 @@ public class DetailActivity extends AppCompatActivity {
         TextView servingsTextView=findViewById(R.id.recipe_servings);
         TextView preparationTimeTextView=findViewById(R.id.recipe_preparationTime);
         ImageView imageView=findViewById(R.id.recipe_image);
-        //TextView stepsTextView=findViewById();
+        RatingBar ratingBar=findViewById(R.id.recipe_ratingbar);
+        TextView healthScoreTextView=findViewById(R.id.health_score);
+        TextView cal=findViewById(R.id.recipe_calories);
+        TextView protein=findViewById(R.id.recipe_protein);
+        TextView carbohydrate=findViewById(R.id.recipe_carbohydrate);
+        TextView suger=findViewById(R.id.recipe_sugar);
+        TextView sodium=findViewById(R.id.recipe_sodium);
+        TextView fat=findViewById(R.id.recipe_fat);
+        TextView saturatedfat=findViewById(R.id.recipe_saturatedFat);
+        TextView memberUsername=findViewById(R.id.recipe_member_username);
 
         if (recipe != null) {
             nameTextView.setText(recipe.getName());
+            memberUsername.setText(recipe.getUsername());
             descriptionTextView.setText(recipe.getDescription());
             ratingTextView.setText(String.valueOf(recipe.getRating()));
-            numberOfRatingTextView.setText(String.valueOf(recipe.getNumberOfRating()));
-            numberOfSavedTextView.setText(String.valueOf(recipe.getNumberOfSaved()));
+            numberOfRatingTextView.setText(recipe.getNumberOfRating() + " reviews");
+            numberOfSavedTextView.setText(String.valueOf(recipe.getNumberOfSaved())+" saved");
             recipeIdTextView.setText(String.valueOf(recipe.getId()));
             submittedDateTextView.setText(recipe.getSubmittedDate().toString());
             tagsTextView.setText(TextUtils.join(", ", recipe.getTags()));
@@ -85,6 +97,28 @@ public class DetailActivity extends AppCompatActivity {
             preparationTimeTextView.setText(recipe.getPreparationTime() + " mins");
             String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
             Picasso.get().load(imageUrl).into(imageView);
+            ratingBar.setRating(recipe.getRating().floatValue());
+            int healthScore = recipe.getHealthScore();
+            if (healthScore <= 1) {
+                // 为0或1分设置红色
+                healthScoreTextView.setTextColor(Color.RED);
+            } else if (healthScore <= 3) {
+                // 为2或3分设置橙色
+                healthScoreTextView.setTextColor(Color.parseColor("#FFA500")); // 橙色
+            } else {
+                // 为4, 5, 6分设置绿色
+                healthScoreTextView.setTextColor(Color.GREEN);
+            }
+            healthScoreTextView.setText(healthScore + " /6");
+            cal.setText(String.valueOf(recipe.getCalories())+" kcal");
+            protein.setText(String.valueOf(recipe.getProtein()));
+            carbohydrate.setText(String.valueOf(recipe.getCarbohydrate()));
+            suger.setText(String.valueOf(recipe.getSugar()));
+            sodium.setText(String.valueOf(recipe.getSodium()));
+            fat.setText(String.valueOf(recipe.getFat()));
+            saturatedfat.setText(String.valueOf(recipe.getSaturatedFat()));
+
+
 
         }
 
