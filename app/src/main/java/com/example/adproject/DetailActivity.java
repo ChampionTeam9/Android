@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,10 +16,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -42,6 +62,14 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Recipe recipe = intent.getParcelableExtra("Recipe");
 
+
+        RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
+        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 在获取对象之后立即打印日志
+        Log.d("DetailActivity", "Recipe: " + recipe);
+
+
         // 找到步骤RecyclerView
         RecyclerView stepsRecyclerView = findViewById(R.id.recycler_steps);
         // 设置布局管理器
@@ -52,13 +80,13 @@ public class DetailActivity extends AppCompatActivity {
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
 
-        if (recipe != null) {
-            Log.d("DetailActivity", "Recipe name: " + recipe.getName());
-            Log.d("DetailActivity", "Recipe description: " + recipe.getDescription());
-            // 更新UI...
-        } else {
-            Log.d("DetailActivity", "Recipe object is null");
-        }
+//        if (recipe != null) {
+//            Log.d("DetailActivity", "Recipe name: " + recipe.getName());
+//            Log.d("DetailActivity", "Recipe description: " + recipe.getDescription());
+//            // 更新UI...
+//        } else {
+//            Log.d("DetailActivity", "Recipe object is null");
+//        }
 
         // 更新UI
         TextView nameTextView = findViewById(R.id.recipe_name);
@@ -126,10 +154,107 @@ public class DetailActivity extends AppCompatActivity {
             fat.setText(String.valueOf(recipe.getFat()));
             saturatedfat.setText(String.valueOf(recipe.getSaturatedFat()));
 
+            String reviewsUrl = "http://10.0.2.2:8080/getReview/" + recipe.getId();
+            Picasso.get().load(reviewsUrl).into(imageView);
+            getReview();
 
 
         }
 
 
     }
+    private void getReview() {
+
+        OkHttpClient client = new OkHttpClient();
+        Intent intent = getIntent();
+        Recipe recipe = intent.getParcelableExtra("Recipe");
+        int recipeid=recipe.getId();
+        String url = "http://10.0.2.2:8080/api/getReviewData?recipeid=" + recipeid;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // 将响应体转换为字符串
+                    String responseData = response.body().string();
+                    // 将字符串转换为JSONArray
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseData);
+                        List<Review> reviews = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject reviewObject = jsonArray.getJSONObject(i);
+                            // 用reviewObject填充Review对象
+                            Review review = new Review();
+                            review.setId(reviewObject.optInt("id"));
+                            review.setComment(reviewObject.optString("comment"));
+                            // 假设Review有一个Member对象，这里简化为直接设置ID
+                            int rating = reviewObject.optInt("rating");
+                            review.setRating(rating);
+                            String dateStr = reviewObject.optString("reviewDate");
+                            Log.d("comment",review.getComment());
+                            if (!dateStr.isEmpty()) {
+                                LocalDate reviewDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+                                review.setReviewDate(reviewDate);
+                            }
+
+                            // 填充其他必要字段
+                            reviews.add(review);
+                        }
+
+                        // 在UI线程中更新UI，显示评论列表或进行其他操作
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // 使用reviewDTOs更新RecyclerView的适配器
+                                updateReviewRecyclerView(reviews);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 请求失败的处理，例如显示错误消息
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DetailActivity.this, "Failed to retrieve data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+        });
+
+
+
+
+    }
+    private void updateReviewRecyclerView(List<Review> reviewDTOs) {
+        // 假设您的RecyclerView已经在onCreate中初始化并设置了LayoutManager
+        RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
+
+        // 检查适配器是否已经存在
+        ReviewAdapter adapter = (ReviewAdapter) reviewsRecyclerView.getAdapter();
+        if (adapter == null) {
+            // 如果适配器不存在，创建新的适配器并设置给RecyclerView
+            adapter = new ReviewAdapter(reviewDTOs);
+            reviewsRecyclerView.setAdapter(adapter);
+        } else {
+            // 如果适配器已经存在，更新其数据并通知数据变更
+            adapter.updateData(reviewDTOs);
+        }
+    }
+
 }
