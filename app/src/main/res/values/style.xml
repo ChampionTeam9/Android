@@ -1,0 +1,12 @@
+<!-- res/values/styles.xml -->
+<resources>
+
+    <style name="RecipeText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="RecipeTextBold" parent="RecipeText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>

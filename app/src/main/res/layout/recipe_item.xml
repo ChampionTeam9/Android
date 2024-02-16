@@ -1,0 +1,28 @@
+<!-- res/layout/recipe_item.xml -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 食谱 ID -->
+    <TextView
+        android:id="@+id/idTextView"
+        style="@style/RecipeTextBold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 食谱名称 -->
+    <TextView
+        android:id="@+id/nameTextView"
+        style="@style/RecipeTextBold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 食谱描述 -->
+    <TextView
+        android:id="@+id/descriptionTextView"
+        style="@style/RecipeText"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>
