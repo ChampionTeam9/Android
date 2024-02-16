@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">ADProject</string>
+
+    <string name="username">Enter your username</string>
+    <string name="password">Enter your password</string>
+    <string name="login">Login</string>
+    <string name="back">Back</string>
+    <string name="welcome_message">Welcome!</string>
+    <string name="login_icon_description">user</string>
+    <string name="health_recipe">Health Recipe</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_favorites">favorites</string>
+    <string name="menu_profile">Profile</string>
+    <string name="nav_header_desc">Header</string>
+
+
 </resources>

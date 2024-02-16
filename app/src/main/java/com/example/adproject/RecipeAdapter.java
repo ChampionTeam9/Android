@@ -1,49 +1,123 @@
+
 package com.example.adproject;
+
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.WindowDecorActionBar;
+
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
-    private List<RecipeModel> recipeList;
 
-    public RecipeAdapter(List<RecipeModel> recipeList) {
-        this.recipeList = recipeList;
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+
+    private List<Recipe> mRecipeList; // 使用Recipe对象列表
+
+    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
+    public void updateRecipes(List<Recipe> recipes) {
+        System.out.println("updateRecipes Called");
+        System.out.println("recipes.size(): " + recipes.size());
+        mRecipeList.clear();
+        mRecipeList.addAll(recipes);
+        notifyDataSetChanged();
     }
 
-    @NonNull
-    @Override
-    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item, parent, false);
-        return new RecipeViewHolder(view);
+    // 新增追加数据的方法
+    public void appendRecipes(List<Recipe> newRecipes) {
+        Log.d("RecipeAdapter", "Appending recipes: " + newRecipes.size());
+        int startPosition = this.mRecipeList.size(); // 获取追加前的数据量
+        this.mRecipeList.addAll(newRecipes); // 追加新数据
+        notifyItemRangeInserted(startPosition, newRecipes.size()); // 仅通知追加的数据部分更新
+    }
+
+    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
+
+    public interface OnItemClickListener {
+        void onItemClick(Recipe recipe);
+    }
+
+
+
+    private OnItemClickListener onItemClickListener;
+
+    // 构造函数中添加监听器参数
+    public RecipeAdapter(List<Recipe> recipes, OnItemClickListener listener) {
+        mRecipeList = recipes;
+        onItemClickListener = listener;
+    }
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView nameTextView;
+        public TextView descriptionTextView;
+        public ImageView imageView; // 添加 ImageView 的引用
+
+        private OnItemClickListener listener;
+
+        public ViewHolder(View itemView, final OnItemClickListener listener) {
+            super(itemView);
+            nameTextView = itemView.findViewById(R.id.recipe_name);
+            descriptionTextView = itemView.findViewById(R.id.recipe_description);
+            imageView = itemView.findViewById(R.id.recipe_image); // 初始化 ImageView
+            this.listener = listener;
+        }
+    }
+
+
+
+    public RecipeAdapter(List<Recipe> recipes) {
+        mRecipeList = recipes;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        RecipeModel recipe = recipeList.get(position);
-        holder.idTextView.setText(recipe.getId());
+    public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Make sure the layout name here matches your XML file name
+        View recipeView = inflater.inflate(R.layout.recipe_item, parent, false);
+
+        return new ViewHolder(recipeView, onItemClickListener);
+    }
+
+
+
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final Recipe recipe = mRecipeList.get(position);
+        Log.d("RecipeAdapter", "Binding view holder for position: " + position);
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
-        // 绑定其他数据...
+
+
+
+        // 构建图片 URL 并使用 Picasso 加载图片
+        String imageUrl = "http://10.0.2.2:8080/images/" + recipe.getImage();
+        Picasso.get().load(imageUrl).into(holder.imageView);
+
+        // 设置点击监听器
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(recipe);
+                }
+            }
+        });
     }
+
+
 
     @Override
     public int getItemCount() {
-        return recipeList.size();
-    }
-
-    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTextView;
-        public TextView descriptionTextView;
-        public TextView idTextView;
-        public RecipeViewHolder(@NonNull View itemView) {
-            super(itemView);
-            nameTextView = itemView.findViewById(R.id.nameTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            idTextView = itemView.findViewById(R.id.idTextView);
-        }
+        return mRecipeList.size();
     }
 }
+

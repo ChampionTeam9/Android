@@ -1,28 +1,74 @@
-<!-- res/layout/recipe_item.xml -->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- recipe_item.xml -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="#ffffff"
+    app:cardUseCompatPadding="true"
+    app:cardMaxElevation="8dp">
 
-    <!-- 食谱 ID -->
-    <TextView
-        android:id="@+id/idTextView"
-        style="@style/RecipeTextBold"
-        android:layout_marginBottom="8dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- 食谱名称 -->
-    <TextView
-        android:id="@+id/nameTextView"
-        style="@style/RecipeTextBold"
-        android:layout_marginBottom="8dp"/>
+        <ImageView
+            android:id="@+id/recipe_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"/>
 
-    <!-- 食谱描述 -->
-    <TextView
-        android:id="@+id/descriptionTextView"
-        style="@style/RecipeText"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            android:id="@+id/recipe_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recipe Title"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="24sp"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/recipe_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"
+            android:text="Recipe Description"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/user_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/user" />
+
+            <TextView
+                android:id="@+id/member_username"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                android:text="Member Username" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
