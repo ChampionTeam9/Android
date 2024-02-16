@@ -21,6 +21,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
     public void updateRecipes(List<Recipe> recipes) {
+        System.out.println("updateRecipes called");
         mRecipeList.clear();
         mRecipeList.addAll(recipes);
         notifyDataSetChanged();

@@ -147,7 +147,9 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("searchButton clicked");
                 String searchString = searchEditText.getText().toString();
+                System.out.println("searchString: " + searchString);
                 searchRecipes(searchString);
             }
         });
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void searchRecipes(String query) {
+        System.out.println("searchRecipes called");
         List<Recipe> filteredRecipes = new ArrayList<>();
         for (Recipe recipe : mAllRecipes) { // 应该使用mAllRecipes进行搜索
             if (recipe.getName().toLowerCase().contains(query.toLowerCase())) {
