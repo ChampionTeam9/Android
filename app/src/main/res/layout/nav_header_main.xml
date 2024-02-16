@@ -8,8 +8,12 @@
         android:id="@+id/nav_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="35dp"
+        android:layout_marginLeft="30dp"
         android:gravity="center_vertical"
         android:text="Your Title"
+
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 
 

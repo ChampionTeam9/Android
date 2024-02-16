@@ -2,6 +2,8 @@ package com.example.adproject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,6 +109,12 @@ public class Recipe implements Parcelable {
         Double sodium = jsonObject.optDouble("sodium", 0.0);
         Double fat = jsonObject.optDouble("fat", 0.0);
         Double saturatedFat = jsonObject.optDouble("saturatedFat", 0.0);
+
+
+        Log.d("Debug", "JSON Data: " + jsonObject.toString());
+
+        Log.d("Debug", "Health Score: " + healthScore);
+        Log.d("Debug", "Calories: " + calories);
 
         return new Recipe(id, name, description, image, rating, numberOfRating, numberOfSaved,
                 submittedDate, tags, servings, preparationTime, steps, healthScore, calories, protein,
