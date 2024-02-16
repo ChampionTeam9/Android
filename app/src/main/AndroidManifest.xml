@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ADProject"
         tools:targetApi="31">
         <activity
+            android:name=".MyReviewsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShoppingListActivity"
             android:exported="false" />
         <activity

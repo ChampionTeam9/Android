@@ -13,11 +13,11 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/ingredient_foodText"
+        android:id="@+id/ingredient_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Ingedient"
+        android:text="Ingredient"
         android:textSize="18sp" />
 
 </LinearLayout>

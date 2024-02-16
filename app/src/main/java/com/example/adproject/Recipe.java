@@ -36,12 +36,13 @@ public class Recipe implements Parcelable {
     private Double fat;
     private Double saturatedFat;
     private String username;
+    private List<String> ingredients;
 
     // 通用构造函数
     public Recipe(Integer id, String name, String description, String image, Double rating, Integer numberOfRating,
                      Integer numberOfSaved, LocalDate submittedDate, List<String> tags, Integer servings,
                      Integer preparationTime, List<String> steps, Integer healthScore, Double calories, Double protein,
-                     Double carbohydrate, Double sugar, Double sodium, Double fat, Double saturatedFat,String username) {
+                     Double carbohydrate, Double sugar, Double sodium, Double fat, Double saturatedFat, String username, List<String> ingredients) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,7 +63,8 @@ public class Recipe implements Parcelable {
         this.sodium = sodium;
         this.fat = fat;
         this.saturatedFat = saturatedFat;
-        this.username=username;
+        this.username = username;
+        this.ingredients = ingredients;
     }
 
     public Recipe() {
@@ -109,16 +111,16 @@ public class Recipe implements Parcelable {
         Double sodium = jsonObject.optDouble("sodium", 0.0);
         Double fat = jsonObject.optDouble("fat", 0.0);
         Double saturatedFat = jsonObject.optDouble("saturatedFat", 0.0);
-
-
-        Log.d("Debug", "JSON Data: " + jsonObject.toString());
-
-        Log.d("Debug", "Health Score: " + healthScore);
-        Log.d("Debug", "Calories: " + calories);
-
+        List<String> ingredients = new ArrayList<>();
+        if (jsonObject.has("ingredients")) {
+            JSONArray ingredientsArray = jsonObject.getJSONArray("ingredients");
+            for (int i = 0; i < ingredientsArray.length(); i++) {
+                ingredients.add(ingredientsArray.getString(i));
+            }
+        }
         return new Recipe(id, name, description, image, rating, numberOfRating, numberOfSaved,
                 submittedDate, tags, servings, preparationTime, steps, healthScore, calories, protein,
-                carbohydrate, sugar, sodium, fat, saturatedFat, username);
+                carbohydrate, sugar, sodium, fat, saturatedFat, username, ingredients);
 
     }
 
@@ -197,6 +199,7 @@ public class Recipe implements Parcelable {
         } else {
             saturatedFat = in.readDouble();
         }
+        ingredients = in.createStringArrayList();
     }
 
 
@@ -274,6 +277,7 @@ public class Recipe implements Parcelable {
         if (saturatedFat != null) {
             dest.writeDouble(saturatedFat);
         }
+        dest.writeStringList(ingredients);
     }
 
 
@@ -447,5 +451,12 @@ public class Recipe implements Parcelable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<String> getIngredients() {
+        return ingredients;
+    }
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
     }
 }
