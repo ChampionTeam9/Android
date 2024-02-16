@@ -36,6 +36,7 @@
             android:layout_marginBottom="8dp">
 
             <RatingBar
+                android:id="@+id/recipe_ratingbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@android:attr/ratingBarStyleSmall"
@@ -256,6 +257,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/health_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
