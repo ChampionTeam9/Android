@@ -17,6 +17,282 @@ public class Recipe implements Parcelable {
     private String name;
     private String description;
     private String image;
+    private Double rating;
+    private Integer numberOfRating;
+    private Integer numberOfSaved;
+    private LocalDate submittedDate;
+    private List<String> tags;
+    private Integer servings;
+    private Integer preparationTime;
+    private List<String> steps;
+    private Integer healthScore;
+    private Double calories;
+    private Double protein;
+    private Double carbohydrate;
+    private Double sugar;
+    private Double sodium;
+    private Double fat;
+    private Double saturatedFat;
+    private String username;
+
+    // 通用构造函数
+    public Recipe(Integer id, String name, String description, String image, Double rating, Integer numberOfRating,
+                     Integer numberOfSaved, LocalDate submittedDate, List<String> tags, Integer servings,
+                     Integer preparationTime, List<String> steps, Integer healthScore, Double calories, Double protein,
+                     Double carbohydrate, Double sugar, Double sodium, Double fat, Double saturatedFat,String username) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.rating = rating;
+        this.numberOfRating = numberOfRating;
+        this.numberOfSaved = numberOfSaved;
+        this.submittedDate = submittedDate;
+        this.tags = tags;
+        this.servings = servings;
+        this.preparationTime = preparationTime;
+        this.steps = steps;
+        this.healthScore=healthScore;
+        this.calories=calories;
+        this.protein = protein;
+        this.carbohydrate = carbohydrate;
+        this.sugar = sugar;
+        this.sodium = sodium;
+        this.fat = fat;
+        this.saturatedFat = saturatedFat;
+        this.username=username;
+    }
+
+    public Recipe() {
+
+    }
+
+
+    // 从JSONObject创建Recipe实例的静态方法
+    public static Recipe fromJson(JSONObject jsonObject) throws JSONException {
+        int id = jsonObject.getInt("id");
+        String name = jsonObject.getString("name");
+        String username = jsonObject.optString("username", "");
+        String description = jsonObject.optString("description", "");
+        String image = jsonObject.optString("image", "");
+        double rating = jsonObject.optDouble("rating", 0);
+        int numberOfRating = jsonObject.optInt("numberOfRating", 0);
+        int numberOfSaved = jsonObject.optInt("numberOfSaved", 0);
+        String dateStr = jsonObject.optString("submittedDate", null);
+        LocalDate submittedDate = null;
+        if (dateStr != null) {
+            submittedDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        }
+        List<String> tags = new ArrayList<>();
+        if (jsonObject.has("tags")) {
+            JSONArray tagsArray = jsonObject.getJSONArray("tags");
+            for (int i = 0; i < tagsArray.length(); i++) {
+                tags.add(tagsArray.getString(i));
+            }
+        }
+        int servings = jsonObject.optInt("servings", 0);
+        int preparationTime = jsonObject.optInt("preparationTime", 0);
+        List<String> steps = new ArrayList<>();
+        if (jsonObject.has("steps")) {
+            JSONArray stepsArray = jsonObject.getJSONArray("steps");
+            for (int i = 0; i < stepsArray.length(); i++) {
+                steps.add(stepsArray.getString(i));
+            }
+        }
+        Integer healthScore = jsonObject.optInt("healthScore", 0);
+        Double calories = jsonObject.optDouble("calories", 0.0);
+        Double protein = jsonObject.optDouble("protein", 0.0);
+        Double carbohydrate = jsonObject.optDouble("carbohydrate", 0.0);
+        Double sugar = jsonObject.optDouble("sugar", 0.0);
+        Double sodium = jsonObject.optDouble("sodium", 0.0);
+        Double fat = jsonObject.optDouble("fat", 0.0);
+        Double saturatedFat = jsonObject.optDouble("saturatedFat", 0.0);
+
+        return new Recipe(id, name, description, image, rating, numberOfRating, numberOfSaved,
+                submittedDate, tags, servings, preparationTime, steps, healthScore, calories, protein,
+                carbohydrate, sugar, sodium, fat, saturatedFat, username);
+
+    }
+
+    // Parcelable接口
+    protected Recipe(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        username = in.readString();
+        description = in.readString();
+        image = in.readString();
+        if (in.readByte() == 0) {
+            rating = null;
+        } else {
+            rating = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            numberOfRating = null;
+        } else {
+            numberOfRating = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            numberOfSaved = null;
+        } else {
+            numberOfSaved = in.readInt();
+        }
+        submittedDate = (LocalDate) in.readSerializable();
+        tags = in.createStringArrayList();
+        if (in.readByte() == 0) {
+            servings = null;
+        } else {
+            servings = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            preparationTime = null;
+        } else {
+            preparationTime = in.readInt();
+        }
+        steps = in.createStringArrayList();
+        if (in.readByte() == 0) {
+            healthScore = null;
+        } else {
+            healthScore = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            calories = null;
+        } else {
+            calories = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            protein = null;
+        } else {
+            protein = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            carbohydrate = null;
+        } else {
+            carbohydrate = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            sugar = null;
+        } else {
+            sugar = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            sodium = null;
+        } else {
+            sodium = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            fat = null;
+        } else {
+            fat = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            saturatedFat = null;
+        } else {
+            saturatedFat = in.readDouble();
+        }
+    }
+
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id == null ? 0 : id);
+        dest.writeString(name);
+        dest.writeString(username);
+        dest.writeString(description);
+        dest.writeString(image);
+        dest.writeByte((byte) (rating == null ? 0 : 1));
+        if (rating != null) {
+            dest.writeDouble(rating);
+        }
+        dest.writeByte((byte) (numberOfRating == null ? 0 : 1));
+        if (numberOfRating != null) {
+            dest.writeInt(numberOfRating);
+        }
+        dest.writeByte((byte) (numberOfSaved == null ? 0 : 1));
+        if (numberOfSaved != null) {
+            dest.writeInt(numberOfSaved);
+        }
+        dest.writeSerializable(submittedDate);
+        dest.writeStringList(tags);
+        dest.writeByte((byte) (servings == null ? 0 : 1));
+        if (servings != null) {
+            dest.writeInt(servings);
+        }
+        dest.writeByte((byte) (preparationTime == null ? 0 : 1));
+        if (preparationTime != null) {
+            dest.writeInt(preparationTime);
+        }
+        dest.writeStringList(steps);
+        dest.writeByte((byte) (healthScore == null ? 0 : 1));
+        if (healthScore != null) {
+            dest.writeInt(healthScore);
+        }
+        dest.writeByte((byte) (calories == null ? 0 : 1));
+        if (calories != null) {
+            dest.writeDouble(calories);
+        }
+        dest.writeByte((byte) (protein == null ? 0 : 1));
+        if (protein != null) {
+            dest.writeDouble(protein);
+        }
+        dest.writeByte((byte) (carbohydrate == null ? 0 : 1));
+        if (carbohydrate != null) {
+            dest.writeDouble(carbohydrate);
+        }
+        dest.writeByte((byte) (sugar == null ? 0 : 1));
+        if (sugar != null) {
+            dest.writeDouble(sugar);
+        }
+        dest.writeByte((byte) (sodium == null ? 0 : 1));
+        if (sodium != null) {
+            dest.writeDouble(sodium);
+        }
+        dest.writeByte((byte) (fat == null ? 0 : 1));
+        if (fat != null) {
+            dest.writeDouble(fat);
+        }
+        dest.writeByte((byte) (saturatedFat == null ? 0 : 1));
+        if (saturatedFat != null) {
+            dest.writeDouble(saturatedFat);
+        }
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -89,157 +365,79 @@ public class Recipe implements Parcelable {
     public List<String> getSteps() {
         return steps;
     }
-
     public void setSteps(List<String> steps) {
         this.steps = steps;
     }
 
-    private Double rating;
-    private Integer numberOfRating;
-    private Integer numberOfSaved;
-    private LocalDate submittedDate;
-    private List<String> tags;
-    private Integer servings;
-    private Integer preparationTime;
-    private List<String> steps;
-
-    // 通用构造函数
-    public Recipe(int id, String name, String description, String image,
-                  Double rating,
-                  Integer numberOfRating,
-                  Integer numberOfSaved,
-                  LocalDate submittedDate,
-                  List<String> tags,
-                  Integer servings,
-                  Integer preparationTime,
-                  List<String> steps) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.image=image;
-        this.rating=rating;
-        this.numberOfRating=numberOfRating;
-        this.numberOfSaved=numberOfSaved;
-        this.submittedDate=submittedDate;
-        this.tags=tags;
-        this.servings=servings;
-        this.preparationTime=preparationTime;
-        this.steps=steps;
-
-
+    public Integer getHealthScore() {
+        return healthScore;
     }
 
-    public Recipe() {
-
+    public void setHealthScore(Integer healthScore) {
+        this.healthScore = healthScore;
     }
 
-
-    // 从JSONObject创建Recipe实例的静态方法
-    public static Recipe fromJson(JSONObject jsonObject) throws JSONException {
-        int id = jsonObject.getInt("id");
-        String name = jsonObject.getString("name");
-        String description = jsonObject.optString("description", "");
-        String image = jsonObject.optString("image", "");
-        double rating = jsonObject.optDouble("rating", 0);
-        int numberOfRating = jsonObject.optInt("numberOfRating", 0);
-        int numberOfSaved = jsonObject.optInt("numberOfSaved", 0);
-        String dateStr = jsonObject.optString("submittedDate", null);
-        LocalDate submittedDate = null;
-        if (dateStr != null) {
-            submittedDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        List<String> tags = new ArrayList<>();
-        if (jsonObject.has("tags")) {
-            JSONArray tagsArray = jsonObject.getJSONArray("tags");
-            for (int i = 0; i < tagsArray.length(); i++) {
-                tags.add(tagsArray.getString(i));
-            }
-        }
-        int servings = jsonObject.optInt("servings", 0);
-        int preparationTime = jsonObject.optInt("preparationTime", 0);
-        List<String> steps = new ArrayList<>();
-        if (jsonObject.has("steps")) {
-            JSONArray stepsArray = jsonObject.getJSONArray("steps");
-            for (int i = 0; i < stepsArray.length(); i++) {
-                steps.add(stepsArray.getString(i));
-            }
-        }
-
-        return new Recipe(id, name, description, image, rating, numberOfRating, numberOfSaved,
-                submittedDate, tags, servings, preparationTime, steps);
+    public Double getCalories() {
+        return calories;
     }
 
-    // Parcelable接口的方法实现
-    protected Recipe(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        description = in.readString();
-        image = in.readString();
-        rating = in.readDouble();
-        numberOfRating = in.readInt();
-        numberOfSaved = in.readInt();
-        String dateStr = in.readString();
-        submittedDate = dateStr != null ? LocalDate.parse(dateStr) : null;
-        tags = in.createStringArrayList();
-        servings = in.readInt();
-        preparationTime = in.readInt();
-        steps = in.createStringArrayList();
+    public void setCalories(Double calories) {
+        this.calories = calories;
     }
 
-
-    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
-        @Override
-        public Recipe createFromParcel(Parcel in) {
-            return new Recipe(in);
-        }
-
-        @Override
-        public Recipe[] newArray(int size) {
-            return new Recipe[size];
-        }
-    };
-
-    @Override
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeString(image);
-        dest.writeDouble(rating);
-        dest.writeInt(numberOfRating);
-        dest.writeInt(numberOfSaved);
-        dest.writeString(submittedDate != null ? submittedDate.toString() : null);
-        dest.writeStringList(tags);
-        dest.writeInt(servings);
-        dest.writeInt(preparationTime);
-        dest.writeStringList(steps);
+    public Double getProtein() {
+        return protein;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setProtein(Double protein) {
+        this.protein = protein;
     }
 
-    // Getter方法
-    public int getId() {
-        return id;
+    public Double getCarbohydrate() {
+        return carbohydrate;
     }
 
-    public String getName() {
-        return name;
+    public void setCarbohydrate(Double carbohydrate) {
+        this.carbohydrate = carbohydrate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Double getSugar() {
+        return sugar;
     }
 
-    public String getDescription() {
-        return description;
+    public void setSugar(Double sugar) {
+        this.sugar = sugar;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public Double getSodium() {
+        return sodium;
+    }
+
+    public void setSodium(Double sodium) {
+        this.sodium = sodium;
+    }
+
+    public Double getFat() {
+        return fat;
+    }
+
+    public void setFat(Double fat) {
+        this.fat = fat;
+    }
+
+    public Double getSaturatedFat() {
+        return saturatedFat;
+    }
+
+    public void setSaturatedFat(Double saturatedFat) {
+        this.saturatedFat = saturatedFat;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
