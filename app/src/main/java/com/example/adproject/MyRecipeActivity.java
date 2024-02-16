@@ -32,14 +32,7 @@ public class MyRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_recipe);
 
-        backbutton = findViewById(R.id.backButton);
-        backbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                finish();
-            }
-        });
 
         // 初始化RecyclerView
         mRecyclerView = findViewById(R.id.my_recycler_view);

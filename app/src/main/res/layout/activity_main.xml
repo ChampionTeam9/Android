@@ -84,7 +84,7 @@
             android:orientation="vertical"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <include layout="@layout/fragment_bottom_sheet" />
+            
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

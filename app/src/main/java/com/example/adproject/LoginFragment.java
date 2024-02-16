@@ -61,7 +61,7 @@ public class LoginFragment extends Fragment {
             startActivity(intent);
         } else {
             // 否则，启动 MyProfile
-            Intent intent = new Intent(getActivity(), MyProfile.class);
+            Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         }
     }
@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
             editor.apply();
 
             // 启动 MyProfile Activity
-            Intent intent = new Intent(getActivity(), MyProfile.class);
+            Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         } else {
             // 登录失败，显示错误消息
