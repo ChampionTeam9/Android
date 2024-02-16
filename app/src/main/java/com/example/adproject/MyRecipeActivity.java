@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adproject.DetailActivity;
@@ -26,17 +27,18 @@ public class MyRecipeActivity extends AppCompatActivity {
     private RecipeAdapter mAdapter;
     private List<Recipe> mRecipes = new ArrayList<>();
     private Button backbutton;
+    private TextView noRecipesText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_recipe);
 
-
-
         // 初始化RecyclerView
         mRecyclerView = findViewById(R.id.my_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        noRecipesText = findViewById(R.id.noRecipesText);
 
         // 从Intent中获取传递的JSON字符串
         String recipeListJson = getIntent().getStringExtra("recipeList");
@@ -78,6 +80,10 @@ public class MyRecipeActivity extends AppCompatActivity {
 
             // 将适配器设置到RecyclerView中
             mRecyclerView.setAdapter(mAdapter);
+
+            if (mRecipes.size() == 0){
+                noRecipesText.setVisibility(View.VISIBLE);
+            }
 
         } catch (JSONException e) {
             // JSON解析失败，显示错误消息
