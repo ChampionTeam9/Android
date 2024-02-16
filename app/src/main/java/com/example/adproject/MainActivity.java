@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Failed to retrieve recipes", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Please log in first", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
