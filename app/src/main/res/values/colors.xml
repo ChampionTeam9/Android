@@ -7,4 +7,5 @@
     <color name="secondaryTextColor">#757575</color>
     <color name="mainBackgroundColor">#FFFFFF</color>
     <color name="custom_green">#5cb85c</color>
+    <color name="custom_green_darker">#006400 </color>
 </resources>
