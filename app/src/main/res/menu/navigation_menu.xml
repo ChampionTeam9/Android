@@ -1,18 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_login"
-            android:title="Login" />
+            android:title="Login"
+            android:textAppearance="@style/MyNavigationItemText"/>
         <item
             android:id="@+id/nav_saved"
             android:icon="@drawable/ic_saved"
-            android:title="Saved Recipes" />
+            android:title="Saved Recipes"
+            android:titleTextAppearance="@style/MyNavigationItemText"/>
         <item
             android:id="@+id/nav_menu_item3"
-            android:title="My Reviews" />
+            android:title="My Reviews"
+            android:titleTextAppearance="@style/MyNavigationItemText"/>
         <item
             android:id="@+id/nav_menu_item4"
-            android:title="Shopping List" />
+            android:title="Shopping List"
+            />
     </group>
 </menu>

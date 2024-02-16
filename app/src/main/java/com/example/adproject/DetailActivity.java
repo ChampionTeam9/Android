@@ -113,6 +113,14 @@ public class DetailActivity extends AppCompatActivity {
             cal.setText(String.valueOf(recipe.getCalories())+" kcal");
             protein.setText(String.valueOf(recipe.getProtein()));
             carbohydrate.setText(String.valueOf(recipe.getCarbohydrate()));
+
+
+
+            Log.d("YourTag", "Sugar Value: " + recipe.getSugar());
+            Log.d("YourTag", "recipe name: " + recipe.getName());
+            Log.d("YourTag", "recipe id: " + recipe.getId());
+            Log.d("YourTag", "recipe Sodium: " + recipe.getSodium());
+
             suger.setText(String.valueOf(recipe.getSugar()));
             sodium.setText(String.valueOf(recipe.getSodium()));
             fat.setText(String.valueOf(recipe.getFat()));
