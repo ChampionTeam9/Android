@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private RecipeAdapter mAdapter;
     private EditText searchEditText;
     private boolean isLoading = false;
-
-    private List<Recipe> mAllRecipes = new ArrayList<>();
+    TextView noResultsText;
+    private List<Recipe> mAllRecipes;
     private List<Recipe> mRecipes = new ArrayList<>();
 
     @Override
@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView usernameTextView = headerView.findViewById(R.id.nav_header_title); // 头部布局
         MenuItem loginMenuItem = navigationView.getMenu().findItem(R.id.nav_login); // 假设菜单项的ID为nav_login
+
+        noResultsText = findViewById(R.id.noResultsText);
+        mAllRecipes = new ArrayList<>();
 
         SharedPreferences prefs = getSharedPreferences("user_pref", Context.MODE_PRIVATE);
         boolean isLoggedIn;
@@ -83,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 设置 NavigationView 的选择监听器
-
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -114,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
-
-
-
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -157,9 +155,8 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("searchButton clicked");
+                noResultsText.setVisibility(View.INVISIBLE);
                 String searchString = searchEditText.getText().toString();
-                System.out.println("searchString: " + searchString);
                 searchRecipes(searchString);
             }
         });
@@ -181,13 +178,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void searchRecipes(String query) {
-        System.out.println("searchRecipes called");
         List<Recipe> filteredRecipes = new ArrayList<>();
         for (Recipe recipe : mAllRecipes) { // 应该使用mAllRecipes进行搜索
             if (recipe.getName().toLowerCase().contains(query.toLowerCase())) {
                 filteredRecipes.add(recipe);
             }
         }
+
+        // If no results, display no results message
+        if (filteredRecipes.size() == 0){
+            noResultsText.setVisibility(View.VISIBLE);
+        }
+
         // 更新适配器数据，但不修改mRecipes或mAllRecipes
         mAdapter.updateRecipes(filteredRecipes);
     }
@@ -298,6 +300,8 @@ public class MainActivity extends AppCompatActivity {
                                     newRecipes.add(recipe);
 
                                 }
+                                // save recipes list into mAllRecipes
+                                mAllRecipes = newRecipes;
                                 Log.d("MainActivity", "Size of newRecipes after adding: " + newRecipes.size()); // 添加日志输出
                                 mAdapter.appendRecipes(newRecipes);
                                 mCurrentPage++;

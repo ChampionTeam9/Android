@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,7 +20,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
     public void updateRecipes(List<Recipe> recipes) {
-        System.out.println("updateRecipes called");
+        System.out.println("updateRecipes Called");
+        System.out.println("recipes.size(): " + recipes.size());
         mRecipeList.clear();
         mRecipeList.addAll(recipes);
         notifyDataSetChanged();
