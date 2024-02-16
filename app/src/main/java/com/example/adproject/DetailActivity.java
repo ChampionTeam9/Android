@@ -77,6 +77,12 @@ public class DetailActivity extends AppCompatActivity {
         // 创建并设置适配器
         StepsAdapter stepsAdapter = new StepsAdapter(recipe.getSteps());
         stepsRecyclerView.setAdapter(stepsAdapter);
+
+        RecyclerView ingredientsRecyclerView = findViewById(R.id.recycler_ingredients);
+        ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipe.getIngredients());
+        ingredientsRecyclerView.setAdapter(ingredientsAdapter);
+
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
 
