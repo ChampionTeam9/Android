@@ -55,7 +55,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView descriptionTextView;
-        public ImageView imageView; // 添加 ImageView 的引用
+        public ImageView imageView;
+
+        public TextView usernameTextView;
 
         private OnItemClickListener listener;
 
@@ -63,7 +65,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             super(itemView);
             nameTextView = itemView.findViewById(R.id.recipe_name);
             descriptionTextView = itemView.findViewById(R.id.recipe_description);
-            imageView = itemView.findViewById(R.id.recipe_image); // 初始化 ImageView
+            imageView = itemView.findViewById(R.id.recipe_image);
+            usernameTextView = itemView.findViewById(R.id.member_username);
             this.listener = listener;
         }
     }
@@ -94,6 +97,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Log.d("RecipeAdapter", "Binding view holder for position: " + position);
         holder.nameTextView.setText(recipe.getName());
         holder.descriptionTextView.setText(recipe.getDescription());
+        holder.usernameTextView.setText(recipe.getUsername());
 
 
 
