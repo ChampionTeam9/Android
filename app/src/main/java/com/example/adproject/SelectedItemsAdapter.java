@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,9 +46,6 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
         this.sharedPreferences = sharedPreferences;
     }
 
-
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,11 +66,12 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
+        TextView checkboxText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkbox_selected_item);
-            checkBox.setButtonDrawable(null);
+            checkboxText = itemView.findViewById(R.id.checkbox_text);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -81,19 +81,17 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
                         item.setSelected(isChecked);
                         saveSelectedState(item.getItemName(), isChecked);
                         if (isChecked) {
-                            checkBox.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            checkboxText.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             item.setSelected(true);
                             Log.d("itemname",item.getItemName());
                             Log.d("ischecked", String.valueOf(item.isSelected()));
                             updateIsChecked(item.isSelected(),item.getId());
-
                         } else {
-                            checkBox.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                            checkboxText.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                             item.setSelected(false);
                             Log.d("itemname",item.getItemName());
                             Log.d("ischecked", String.valueOf(item.isSelected()));
                             updateIsChecked(item.isSelected(),item.getId());
-
                         }
                     }
                 }
@@ -101,12 +99,12 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
         }
 
         public void bind(Item item) {
-            checkBox.setText(item.getItemName());
+            checkboxText.setText(item.getItemName());
             checkBox.setChecked(item.isSelected());
             if (item.isSelected()) {
-                checkBox.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                checkboxText.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                checkBox.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                checkboxText.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
         }
     }

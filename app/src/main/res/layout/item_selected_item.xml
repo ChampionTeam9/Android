@@ -2,21 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="16dp">
 
     <CheckBox
         android:id="@+id/checkbox_selected_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:src="?android:attr/listChoiceIndicatorMultiple" />
+
+    <TextView
+        android:id="@+id/checkbox_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Item"
         android:textColor="@android:color/black"
-        android:textColorLink="@android:color/black"
         android:textSize="18sp"
-         />
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
 
 </LinearLayout>
 

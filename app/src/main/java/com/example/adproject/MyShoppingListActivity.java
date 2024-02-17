@@ -10,12 +10,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MyShoppingListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -41,16 +57,9 @@ public class MyShoppingListActivity extends AppCompatActivity {
                 finish();
             }
         });
-        // 获取传递过来的已选项目列表
-        selectedItems = getIntent().getParcelableArrayListExtra("shoppingList");//SELECTED_ITEMS
-
-        if (selectedItems != null) {
-            for (Item item : selectedItems) {
-                Log.d("Selected Items", String.valueOf(item));
-            }
-        } else {
-            Log.d("Selected Items", "No items selected.");
-        }
+        shoppingListItems = new ArrayList<>();
+        getShoppingListItems();
+        System.out.println("shoppingListItems.size(): " + shoppingListItems.size());
 
         // 初始化 RecyclerView
         recyclerView = findViewById(R.id.recycler_selected_items);
@@ -60,19 +69,78 @@ public class MyShoppingListActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("SelectedItems", MODE_PRIVATE);
 
         // 创建适配器并设置到 RecyclerView
-        adapter = new SelectedItemsAdapter(selectedItems, sharedPreferences);
+        adapter = new SelectedItemsAdapter(shoppingListItems, sharedPreferences);
         recyclerView.setAdapter(adapter);
     }
 
-    private Map<String, Boolean> loadSelectedItems() {
-        // 从 SharedPreferences 中加载保存的选中状态
-        Map<String, Boolean> selectedItemsMap = new HashMap<>();
-        Map<String, ?> allEntries = sharedPreferences.getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            selectedItemsMap.put(entry.getKey(), (Boolean) entry.getValue());
+    private void getShoppingListItems() {
+        System.out.println("getShoppingListItems called");
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://10.0.2.2:8080/api/getShoppingList";
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username","member1Username");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return selectedItemsMap;
+        Log.d("jsonSL",jsonObject.toString());
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // 将响应体转换为字符串
+                    String responseData = response.body().string();
+                    // 将字符串转换为JSONArray
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseData);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject itemObject = jsonArray.getJSONObject(i);
+                            Item item = new Item();
+                            item.setId(itemObject.optInt("id"));
+                            item.setItemName(itemObject.optString("ingredientName"));
+                            item.setSelected(itemObject.optBoolean("isChecked"));
+                            shoppingListItems.add(item);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 请求失败的处理
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MyShoppingListActivity.this, "Failed to retrieve data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+        });
     }
+
+//    private Map<String, Boolean> loadSelectedItems() {
+//        // 从 SharedPreferences 中加载保存的选中状态
+//        Map<String, Boolean> selectedItemsMap = new HashMap<>();
+//        Map<String, ?> allEntries = sharedPreferences.getAll();
+//        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+//            selectedItemsMap.put(entry.getKey(), (Boolean) entry.getValue());
+//        }
+//        return selectedItemsMap;
+//    }
 
 //    private void saveSelectedItems(Map<String, Boolean> selectedItemsMap) {
 //        // 保存选中状态到 SharedPreferences
@@ -101,6 +169,4 @@ public class MyShoppingListActivity extends AppCompatActivity {
 //        }
 //        return shoppingListItems;
 //    }
-
-
 }
