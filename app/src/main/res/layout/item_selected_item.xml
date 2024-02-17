@@ -6,16 +6,17 @@
     android:padding="16dp">
 
     <CheckBox
-        android:id="@+id/checkbox_ingredient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/text_ingredient"
+        android:id="@+id/checkbox_selected_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textSize="16sp"/>
-
+        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Item"
+        android:textColor="@android:color/black"
+        android:textColorLink="@android:color/black"
+        android:textSize="18sp"
+         />
 
 </LinearLayout>
+
