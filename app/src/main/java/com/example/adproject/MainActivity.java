@@ -116,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
                 getSavedRecipes(); // 调用获取保存的食谱的方法
                 return true;
             } else if (id==R.id.shoppingList) {
-                getShoppingList();
+//                getShoppingList();
+                Intent intent=new Intent(MainActivity.this, MyShoppingListActivity.class);
+                startActivity(intent);
             }
             return false;
         });

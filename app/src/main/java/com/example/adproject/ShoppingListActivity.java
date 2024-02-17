@@ -4,15 +4,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ShoppingListActivity extends AppCompatActivity {
     Button addselectedBtn;
@@ -21,7 +35,6 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
-
 
 
         Intent intent = getIntent();
@@ -39,32 +52,69 @@ public class ShoppingListActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
 
 
-
-            addselectedBtn=findViewById(R.id.button_add_selected);
+            addselectedBtn = findViewById(R.id.button_add_selected);
             addselectedBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     List<String> selectedItems = adapter.getSelectedItems();
                     Log.d("Selected Items", selectedItems.toString());
+                    SharedPreferences prefs = getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+                    String username = prefs.getString("username", "Guest");
+                    for (String item : selectedItems) {
+                        saveItem(false, username, item);
+                    }
                     Intent intent = new Intent(ShoppingListActivity.this, MyShoppingListActivity.class);
-                    intent.putStringArrayListExtra("SELECTED_ITEMS", (ArrayList<String>) selectedItems);
                     startActivity(intent);
+
+
                 }
             });
-
-
-
-
-
         } else {
             Log.d("ShoppingListActivity", "No INGREDIENTS_ARRAY extra found in intent.");
         }
 
 
-
-
-
     }
+
+    public void saveItem(Boolean ischecked, String username, String itemName) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://10.0.2.2:8080/api/saveShoppingList";
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("isChecked", ischecked);
+            jsonObject.put("username", username);
+            jsonObject.put("ingredientName", itemName);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("saveShoppingList", "successes");
+                } else {
+                    Log.d("saveShoppingList", "failed");
+
+                }
+            }
+        });
+
+
 //    private void sendSelectedItemsToServer(List<String> selectedItems) {
 //        // 创建 Retrofit 实例
 //        Retrofit retrofit = new Retrofit.Builder()
@@ -100,4 +150,5 @@ public class ShoppingListActivity extends AppCompatActivity {
 //        });
 //    }
 
+    }
 }
