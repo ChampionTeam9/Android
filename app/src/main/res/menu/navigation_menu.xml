@@ -12,12 +12,9 @@
             android:title="Saved Recipes"
             android:titleTextAppearance="@style/MyNavigationItemText"/>
         <item
-            android:id="@+id/nav_menu_item3"
-            android:title="My Reviews"
-            android:titleTextAppearance="@style/MyNavigationItemText"/>
-        <item
-            android:id="@+id/nav_menu_item4"
+            android:id="@+id/shoppingList"
+            android:icon="@drawable/ic_shoppinglist"
             android:title="Shopping List"
-            />
+            android:titleTextAppearance="@style/MyNavigationItemText"/>
     </group>
 </menu>
