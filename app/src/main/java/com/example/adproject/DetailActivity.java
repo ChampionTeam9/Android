@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Call;
@@ -40,6 +41,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class DetailActivity extends AppCompatActivity {
+    Button shoppinglistbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +61,29 @@ public class DetailActivity extends AppCompatActivity {
 //        });
         // 获取从MainActivity传递的食谱对象
 
+
         Intent intent = getIntent();
         Recipe recipe = intent.getParcelableExtra("Recipe");
+
+        shoppinglistbtn = findViewById(R.id.addShoppingList);
+        shoppinglistbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+                String username = sharedPreferences.getString("username", null);
+                if (username == null) {
+                    Toast.makeText(DetailActivity.this, "Please log in first", Toast.LENGTH_SHORT).show();
+                } else {
+                    List<String> ingredients = recipe.getIngredients();
+                    String[] ingredientsArray = ingredients.toArray(new String[0]);
+                    Intent intent = new Intent(DetailActivity.this, ShoppingListActivity.class);
+                    intent.putExtra("INGREDIENTS_ARRAY", ingredientsArray);
+                    Log.d("shoppinglist", "Ingredients sent to ShoppingListActivity: " + Arrays.toString(ingredientsArray));
+                    startActivity(intent);
+                }
+
+            }
+        });
 
 
         RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
