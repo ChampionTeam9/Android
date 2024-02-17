@@ -1,18 +1,22 @@
 package com.example.adproject;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private List<String> ingredientsList;
+    private List<String> selectedItem = new ArrayList<>();
 
     public ItemAdapter(List<String> ingredientsList) {
         this.ingredientsList = ingredientsList;
@@ -29,12 +33,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String ingredient = ingredientsList.get(position);
         holder.checkbox.setText(ingredient);
-        // 设置点击事件，可以根据需要修改
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // 处理点击事件，可以根据需要修改
-                holder.checkbox.setChecked(!holder.checkbox.isChecked());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // 复选框被选中
+                    selectedItem.add(ingredient);
+                    Log.d("after select", selectedItem.toString());
+                } else {
+                    // 复选框被取消选中
+                    selectedItem.remove(ingredient);
+                    Log.d("after cancel", selectedItem.toString());
+                }
             }
         });
     }
@@ -42,6 +52,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return ingredientsList.size();
+    }
+    public List<String> getSelectedItems() {
+        return selectedItem;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

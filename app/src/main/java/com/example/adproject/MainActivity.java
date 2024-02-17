@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_saved) {
                 getSavedRecipes(); // 调用获取保存的食谱的方法
                 return true;
+            } else if (id==R.id.shoppingList) {
+                getShoppingList();
             }
             return false;
         });
@@ -325,8 +329,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void getShppingList() {
-
+    private void getShoppingList() {
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2:8080/api/getShoppingList";
 
@@ -335,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             // 获取 SharedPreferences 对象
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
-            // 从 SharedPreferences 中读取用户名，默认值为 null
             String username = sharedPreferences.getString("username", null);
             jsonObject.put("username", username);
         } catch (JSONException e) {
@@ -363,20 +365,27 @@ public class MainActivity extends AppCompatActivity {
                     // 将字符串转换为JSONArray
                     try {
                         JSONArray jsonArray = new JSONArray(responseData);
+                        List<Item> itemList = new ArrayList<>();
                         // 遍历JSON数组中的每个对象
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject recipeObject = jsonArray.getJSONObject(i);
-                            // 从每个JSONObject中获取食谱的详细信息
-                            String recipeName = recipeObject.getString("name");
-                            // 根据需要进行其他操作...
+                            JSONObject shoppingListItem = jsonArray.getJSONObject(i);
+                            // 从每个JSONObject中获取购物清单项的详细信息
+                            String itemName = shoppingListItem.getString("ingredientName");
+                            Boolean isChecked=shoppingListItem.getBoolean("checked");
+                            Integer id=shoppingListItem.getInt("id");
+                            Log.d("itemname",itemName);
+                            Log.d("id",id.toString());
+                            Log.d("checked",isChecked.toString());
+                            Item item=new Item(itemName,isChecked,id);
+                            itemList.add(item);
                         }
-                        // 在UI线程中更新UI，显示食谱列表或进行其他操作
+                        // 在UI线程中更新UI，显示购物清单列表或进行其他操作
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Intent intent = new Intent(MainActivity.this, MyRecipeActivity.class);
-                                intent.putExtra("recipeList", responseData);
-                                Log.d("recipes",responseData);// 将响应数据作为JSON字符串传递
+                                Intent intent = new Intent(MainActivity.this, MyShoppingListActivity.class);
+                                intent.putParcelableArrayListExtra("shoppingList", new ArrayList<>(itemList)); // 将响应数据作为JSON字符串传递
+                                Log.d("shoppingList", responseData);
                                 startActivity(intent);
                             }
                         });
@@ -388,15 +397,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Please log in first", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Failed to retrieve shopping list", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             }
         });
-
-
-
-
     }
+
 }
