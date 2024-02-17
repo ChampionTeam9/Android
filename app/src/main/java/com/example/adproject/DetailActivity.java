@@ -66,22 +66,24 @@ public class DetailActivity extends AppCompatActivity {
         RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // 在获取对象之后立即打印日志
+
         Log.d("DetailActivity", "Recipe: " + recipe);
 
 
-        // 找到步骤RecyclerView
         RecyclerView stepsRecyclerView = findViewById(R.id.recycler_steps);
-        // 设置布局管理器
+
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // 创建并设置适配器
+
         StepsAdapter stepsAdapter = new StepsAdapter(recipe.getSteps());
         stepsRecyclerView.setAdapter(stepsAdapter);
 
         RecyclerView ingredientsRecyclerView = findViewById(R.id.recycler_ingredients);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipe.getIngredients());
+        Log.d("drecipein", String.valueOf(recipe.getIngredients().size()));
+
         ingredientsRecyclerView.setAdapter(ingredientsAdapter);
+
 
         // 在获取对象之后立即打印日志
         Log.d("DetailActivity", "Recipe: " + recipe);
@@ -97,25 +99,25 @@ public class DetailActivity extends AppCompatActivity {
         // 更新UI
         TextView nameTextView = findViewById(R.id.recipe_name);
         TextView descriptionTextView = findViewById(R.id.recipe_description);
-        TextView ratingTextView=findViewById(R.id.recipe_rating);
-        TextView numberOfRatingTextView=findViewById(R.id.recipe_numberOfRating);
-        TextView numberOfSavedTextView=findViewById(R.id.recipe_numberOfSaved);
-        TextView recipeIdTextView=findViewById(R.id.recipe_id);
-        TextView submittedDateTextView=findViewById(R.id.recipe_submittedDate);
-        TextView tagsTextView=findViewById(R.id.recipe_tags);
-        TextView servingsTextView=findViewById(R.id.recipe_servings);
-        TextView preparationTimeTextView=findViewById(R.id.recipe_preparationTime);
-        ImageView imageView=findViewById(R.id.recipe_image);
-        RatingBar ratingBar=findViewById(R.id.recipe_ratingbar);
-        TextView healthScoreTextView=findViewById(R.id.health_score);
-        TextView cal=findViewById(R.id.recipe_calories);
-        TextView protein=findViewById(R.id.recipe_protein);
-        TextView carbohydrate=findViewById(R.id.recipe_carbohydrate);
-        TextView suger=findViewById(R.id.recipe_sugar);
-        TextView sodium=findViewById(R.id.recipe_sodium);
-        TextView fat=findViewById(R.id.recipe_fat);
-        TextView saturatedfat=findViewById(R.id.recipe_saturatedFat);
-        TextView memberUsername=findViewById(R.id.recipe_member_username);
+        TextView ratingTextView = findViewById(R.id.recipe_rating);
+        TextView numberOfRatingTextView = findViewById(R.id.recipe_numberOfRating);
+        TextView numberOfSavedTextView = findViewById(R.id.recipe_numberOfSaved);
+        TextView recipeIdTextView = findViewById(R.id.recipe_id);
+        TextView submittedDateTextView = findViewById(R.id.recipe_submittedDate);
+        TextView tagsTextView = findViewById(R.id.recipe_tags);
+        TextView servingsTextView = findViewById(R.id.recipe_servings);
+        TextView preparationTimeTextView = findViewById(R.id.recipe_preparationTime);
+        ImageView imageView = findViewById(R.id.recipe_image);
+        RatingBar ratingBar = findViewById(R.id.recipe_ratingbar);
+        TextView healthScoreTextView = findViewById(R.id.health_score);
+        TextView cal = findViewById(R.id.recipe_calories);
+        TextView protein = findViewById(R.id.recipe_protein);
+        TextView carbohydrate = findViewById(R.id.recipe_carbohydrate);
+        TextView suger = findViewById(R.id.recipe_sugar);
+        TextView sodium = findViewById(R.id.recipe_sodium);
+        TextView fat = findViewById(R.id.recipe_fat);
+        TextView saturatedfat = findViewById(R.id.recipe_saturatedFat);
+        TextView memberUsername = findViewById(R.id.recipe_member_username);
 
         if (recipe != null) {
             nameTextView.setText(recipe.getName());
@@ -123,7 +125,7 @@ public class DetailActivity extends AppCompatActivity {
             descriptionTextView.setText(recipe.getDescription());
             ratingTextView.setText(String.valueOf(recipe.getRating()));
             numberOfRatingTextView.setText(recipe.getNumberOfRating() + " reviews");
-            numberOfSavedTextView.setText(String.valueOf(recipe.getNumberOfSaved())+" saved");
+            numberOfSavedTextView.setText(String.valueOf(recipe.getNumberOfSaved()) + " saved");
             recipeIdTextView.setText(String.valueOf(recipe.getId()));
             submittedDateTextView.setText(recipe.getSubmittedDate().toString());
             tagsTextView.setText(TextUtils.join(", ", recipe.getTags()));
@@ -144,24 +146,22 @@ public class DetailActivity extends AppCompatActivity {
                 healthScoreTextView.setTextColor(Color.GREEN);
             }
             healthScoreTextView.setText(healthScore + " /6");
-            cal.setText(String.valueOf(recipe.getCalories())+" kcal");
+            cal.setText(String.valueOf(recipe.getCalories()) + " kcal");
             protein.setText(String.valueOf(recipe.getProtein()));
             carbohydrate.setText(String.valueOf(recipe.getCarbohydrate()));
 
 
-
-            Log.d("YourTag", "Sugar Value: " + recipe.getSugar());
-            Log.d("YourTag", "recipe name: " + recipe.getName());
-            Log.d("YourTag", "recipe id: " + recipe.getId());
-            Log.d("YourTag", "recipe Sodium: " + recipe.getSodium());
+            Log.d("recipeI", "Sugar Value: " + recipe.getSugar());
+            Log.d("recipeI", "recipe name: " + recipe.getName());
+            Log.d("recipeI", "recipe id: " + recipe.getId());
+            Log.d("recipeI", "recipe Sodium: " + recipe.getSodium());
 
             suger.setText(String.valueOf(recipe.getSugar()));
             sodium.setText(String.valueOf(recipe.getSodium()));
             fat.setText(String.valueOf(recipe.getFat()));
             saturatedfat.setText(String.valueOf(recipe.getSaturatedFat()));
 
-            String reviewsUrl = "http://10.0.2.2:8080/getReview/" + recipe.getId();
-            Picasso.get().load(reviewsUrl).into(imageView);
+
             getReview();
 
 
@@ -169,12 +169,13 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
     private void getReview() {
 
         OkHttpClient client = new OkHttpClient();
         Intent intent = getIntent();
         Recipe recipe = intent.getParcelableExtra("Recipe");
-        int recipeid=recipe.getId();
+        int recipeid = recipe.getId();
         String url = "http://10.0.2.2:8080/api/getReviewData?recipeid=" + recipeid;
 
         Request request = new Request.Builder()
@@ -203,27 +204,27 @@ public class DetailActivity extends AppCompatActivity {
                             JSONObject reviewObject = jsonArray.getJSONObject(i);
                             // 用reviewObject填充Review对象
                             Review review = new Review();
+                            review.setMemberId(reviewObject.optInt("memberId"));
                             review.setId(reviewObject.optInt("id"));
                             review.setComment(reviewObject.optString("comment"));
-                            // 假设Review有一个Member对象，这里简化为直接设置ID
                             int rating = reviewObject.optInt("rating");
                             review.setRating(rating);
                             String dateStr = reviewObject.optString("reviewDate");
-                            Log.d("comment",review.getComment());
+                            Log.d("comment", review.getComment());
                             if (!dateStr.isEmpty()) {
                                 LocalDate reviewDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
                                 review.setReviewDate(reviewDate);
                             }
 
-                            // 填充其他必要字段
+
                             reviews.add(review);
                         }
 
-                        // 在UI线程中更新UI，显示评论列表或进行其他操作
+                        // 在UI线程中更新UI
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // 使用reviewDTOs更新RecyclerView的适配器
+                                // 使用review更新RecyclerView的适配器
                                 updateReviewRecyclerView(reviews);
                             }
                         });
@@ -231,7 +232,7 @@ public class DetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 请求失败的处理，例如显示错误消息
+                    // 请求失败的处理
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -244,21 +245,20 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
-
-
     }
+
     private void updateReviewRecyclerView(List<Review> reviewDTOs) {
-        // 假设您的RecyclerView已经在onCreate中初始化并设置了LayoutManager
+
         RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
 
-        // 检查适配器是否已经存在
+
         ReviewAdapter adapter = (ReviewAdapter) reviewsRecyclerView.getAdapter();
         if (adapter == null) {
-            // 如果适配器不存在，创建新的适配器并设置给RecyclerView
+
             adapter = new ReviewAdapter(reviewDTOs);
             reviewsRecyclerView.setAdapter(adapter);
         } else {
-            // 如果适配器已经存在，更新其数据并通知数据变更
+
             adapter.updateData(reviewDTOs);
         }
     }

@@ -1,5 +1,6 @@
 package com.example.adproject;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +27,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(@NonNull IngredientsAdapter.ViewHolder holder, int position) {
         String ingredient = ingredients.get(position);
+        Log.d("IngredientsAdapter", "Ingredient: " + ingredient);
         holder.ingredientTextView.setText(ingredient);
     }
 
