@@ -10,8 +10,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selected Items"
-        android:textSize="24sp"
+        android:text="Shopping List"
+        android:textSize="40sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
@@ -20,8 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="4dp"
-        android:background="@android:color/white"/>
+        android:padding="4dp" />
 
     <Button
         android:id="@+id/back_to_home"

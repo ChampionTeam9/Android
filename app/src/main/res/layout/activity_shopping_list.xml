@@ -13,8 +13,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Shopping List"
-            android:textSize="28sp"
+            android:text="Add to Shopping List"
+            android:textSize="40sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
 
@@ -28,7 +28,7 @@
             android:id="@+id/button_add_selected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add All Selected Items" />
+            android:text="Add Selected Items" />
 
     </LinearLayout>
 

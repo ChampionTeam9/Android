@@ -173,7 +173,6 @@ public class DetailActivity extends AppCompatActivity {
             protein.setText(String.valueOf(recipe.getProtein()));
             carbohydrate.setText(String.valueOf(recipe.getCarbohydrate()));
 
-
             Log.d("recipeI", "Sugar Value: " + recipe.getSugar());
             Log.d("recipeI", "recipe name: " + recipe.getName());
             Log.d("recipeI", "recipe id: " + recipe.getId());
@@ -183,14 +182,8 @@ public class DetailActivity extends AppCompatActivity {
             sodium.setText(String.valueOf(recipe.getSodium()));
             fat.setText(String.valueOf(recipe.getFat()));
             saturatedfat.setText(String.valueOf(recipe.getSaturatedFat()));
-
-
             getReview();
-
-
         }
-
-
     }
 
     private void getReview() {
@@ -238,8 +231,6 @@ public class DetailActivity extends AppCompatActivity {
                                 LocalDate reviewDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
                                 review.setReviewDate(reviewDate);
                             }
-
-
                             reviews.add(review);
                         }
 
@@ -264,16 +255,11 @@ public class DetailActivity extends AppCompatActivity {
                     });
                 }
             }
-
         });
-
-
     }
 
     private void updateReviewRecyclerView(List<Review> reviewDTOs) {
-
         RecyclerView reviewsRecyclerView = findViewById(R.id.recycler_reviews);
-
 
         ReviewAdapter adapter = (ReviewAdapter) reviewsRecyclerView.getAdapter();
         if (adapter == null) {
@@ -281,9 +267,7 @@ public class DetailActivity extends AppCompatActivity {
             adapter = new ReviewAdapter(reviewDTOs);
             reviewsRecyclerView.setAdapter(adapter);
         } else {
-
             adapter.updateData(reviewDTOs);
         }
     }
-
 }

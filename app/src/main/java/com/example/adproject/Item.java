@@ -10,6 +10,8 @@ public class Item implements Parcelable {
     private String itemName;
     private Boolean isSelected;
 
+    public Item(){}
+
     public Item(String itemName, Boolean isSelected,Integer id) {
         this.itemName = itemName;
         this.isSelected = isSelected;
