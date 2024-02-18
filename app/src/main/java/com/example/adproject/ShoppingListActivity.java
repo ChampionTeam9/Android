@@ -22,6 +22,7 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,7 +51,7 @@ public class ShoppingListActivity extends AppCompatActivity {
             ItemAdapter adapter = new ItemAdapter(receivedIngredientsList);
             recyclerView.setAdapter(adapter);
 
-            addselectedBtn=findViewById(R.id.button_add_selected);
+            addselectedBtn = findViewById(R.id.button_add_selected);
             addselectedBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -65,8 +66,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
-    public void addToShoppingListDB(List<String> selectedItems)
-    {
+    public void addToShoppingListDB(List<String> selectedItems) {
+        Log.d("shoppingSelectedItem", selectedItems.toString());
         System.out.print("addToShoppingListDB called!");
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2:8080/api/addToShoppingList";
@@ -74,6 +75,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
         String selectedItemsStr = String.join(",", selectedItems);
+        Log.d("shopping", selectedItemsStr);
         try {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
             String username = sharedPreferences.getString("username", null);
@@ -82,7 +84,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("json!!!",jsonObject.toString());
+        Log.d("json!!!", jsonObject.toString());
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         Request request = new Request.Builder()
                 .url(url)
@@ -98,11 +100,15 @@ public class ShoppingListActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Log.d("addToshoppingList","succeeded");
-                } else {
-                    Log.d("addToshoppingList","failed");
+                try {
+                    if (response.isSuccessful()) {
+                        Log.d("addToshoppingList", "succeeded");
+                    } else {
+                        Log.d("addToshoppingList", "failed");
 
+                    }
+                } finally {
+                    response.close();
                 }
             }
         });

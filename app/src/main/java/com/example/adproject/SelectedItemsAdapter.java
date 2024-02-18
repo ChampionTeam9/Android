@@ -39,7 +39,7 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
     private SharedPreferences sharedPreferences;
 
     public SelectedItemsAdapter(List<Item> selectedItems, SharedPreferences sharedPreferences) {
-        for(Item item : selectedItems){
+        for (Item item : selectedItems) {
             System.out.println(item.getItemName());
         }
         this.selectedItems = selectedItems;
@@ -79,19 +79,19 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
                     if (position != RecyclerView.NO_POSITION) {
                         Item item = selectedItems.get(position);
                         item.setSelected(isChecked);
-                        saveSelectedState(item.getItemName(), isChecked,item.getId());
+                        saveSelectedState(item.getItemName(), isChecked, item.getId());
                         if (isChecked) {
                             checkboxText.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             item.setSelected(true);
-                            Log.d("itemname",item.getItemName());
+                            Log.d("itemname", item.getItemName());
                             Log.d("ischecked", String.valueOf(item.isSelected()));
-                            updateIsChecked(item.isSelected(),item.getId());
+                            updateIsChecked(item.isSelected(), item.getId());
                         } else {
                             checkboxText.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                             item.setSelected(false);
-                            Log.d("itemname",item.getItemName());
+                            Log.d("itemname", item.getItemName());
                             Log.d("ischecked", String.valueOf(item.isSelected()));
-                            updateIsChecked(item.isSelected(),item.getId());
+                            updateIsChecked(item.isSelected(), item.getId());
                         }
                     }
                 }
@@ -117,21 +117,20 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
         editor.apply();
     }
 
-    public void updateIsChecked(Boolean ischecked,int id)
-    {
+    public void updateIsChecked(Boolean ischecked, int id) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2:8080/api/updateIsChecked";
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("isChecked",ischecked);
-            jsonObject.put("id",id);
+            jsonObject.put("isChecked", ischecked);
+            jsonObject.put("id", id);
             Log.d("ischecked try", String.valueOf(ischecked));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("json",jsonObject.toString());
+        Log.d("json", jsonObject.toString());
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         Request request = new Request.Builder()
                 .url(url)
@@ -147,15 +146,20 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Log.d("updateIschecked","successed");
-                } else {
-                    Log.d("updateIschecked","failed");
+                try {
+                    if (response.isSuccessful()) {
+                        Log.d("updateIschecked", "successed");
+                    } else {
+                        Log.d("updateIschecked", "failed");
 
+                    }
+                } finally {
+                    response.close(); // 关闭响应体，避免资源泄漏
                 }
             }
         });
     }
+
     public void setItems(List<Item> newItems) {
         selectedItems = newItems;
         notifyDataSetChanged(); // Notify the adapter that the dataset has changed
