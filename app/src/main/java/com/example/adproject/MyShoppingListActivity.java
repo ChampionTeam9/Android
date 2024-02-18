@@ -41,7 +41,6 @@ public class MyShoppingListActivity extends AppCompatActivity {
     private SelectedItemsAdapter adapter;
     private List<Item> shoppingListItems;
     private List<Item> selectedItems;
-    private List<String> myShoppingList;
     private SharedPreferences sharedPreferences;
     private Button clearAll;
     private Button clearSelectedButton;
@@ -59,13 +58,13 @@ public class MyShoppingListActivity extends AppCompatActivity {
         addItemText = findViewById(R.id.addItemText);
 
         //getShoppingListItems();
-// 检查是否有传递的数据
+        // 检查是否有传递的数据
         Intent intent = getIntent();
         ArrayList<Item> shoppingList = null;
-        if (intent != null && intent.hasExtra("shoppingList")) {
-            // 从Intent中获取传递的数据列表
+//        if (intent != null && intent.hasExtra("shoppingList")) {
+
             shoppingList = intent.getParcelableArrayListExtra("shoppingList");
-        }
+
 
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,24 +72,28 @@ public class MyShoppingListActivity extends AppCompatActivity {
                 deleteAll();
                 shoppingListItems.clear();
                 adapter.notifyDataSetChanged();
+                finish();
             }
         });
 
+        ArrayList<Item> finalShoppingList = shoppingList;
         clearSelectedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<Item> itemsToClear = new ArrayList<>();
-                Iterator<Item> iterator = shoppingListItems.iterator();
-                while (iterator.hasNext()) {
-                    Item item = iterator.next();
+
+                for (Item item : finalShoppingList) {
                     if (item.isSelected()) {
                         itemsToClear.add(item);
-                        iterator.remove();
                     }
                 }
+                Log.d("selectedItems", itemsToClear.toString()); // 打印选中的项目
                 clearSelectedItemsInDb(itemsToClear);
+                shoppingListItems.removeAll(itemsToClear); // 从列表中移除选中的项目
                 adapter.notifyDataSetChanged();
+                finish();
             }
+
         });
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -279,10 +282,16 @@ public class MyShoppingListActivity extends AppCompatActivity {
         for (Item item : itemsToClear) {
             selectedItemsStr += (item.getId() + ",");
         }
-        selectedItemsStr.substring(0, selectedItemsStr.length() - 1);
+        // 在移除最后一个逗号前打印selectedItemsStr的内容
+        System.out.println("Selected items IDs (before removing last comma): " + selectedItemsStr.toString());
+
+
+        selectedItemsStr = selectedItemsStr.substring(0, selectedItemsStr.length() - 1);
+
+
         JSONObject jsonObject = new JSONObject();
         try {
-            ;
+
             jsonObject.put("itemsToClear", selectedItemsStr);
         } catch (JSONException e) {
             e.printStackTrace();
