@@ -57,8 +57,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                     List<String> checkedItems = adapter.getCheckedItemsWithText();
                     Log.d("Checked Items", checkedItems.toString());
                     addToShoppingListDB(checkedItems);
-                    Intent intent = new Intent(ShoppingListActivity.this, MyShoppingListActivity.class);
-                    startActivity(intent);
+                    finish();
                 }
             });
         } else {

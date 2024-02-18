@@ -58,6 +58,14 @@ public class MyShoppingListActivity extends AppCompatActivity {
         addButton = findViewById(R.id.addButton);
         addItemText = findViewById(R.id.addItemText);
 
+        //getShoppingListItems();
+// 检查是否有传递的数据
+        Intent intent = getIntent();
+        ArrayList<Item> shoppingList = null;
+        if (intent != null && intent.hasExtra("shoppingList")) {
+            // 从Intent中获取传递的数据列表
+            shoppingList = intent.getParcelableArrayListExtra("shoppingList");
+        }
 
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,9 +81,9 @@ public class MyShoppingListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<Item> itemsToClear = new ArrayList<>();
                 Iterator<Item> iterator = shoppingListItems.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     Item item = iterator.next();
-                    if (item.isSelected()){
+                    if (item.isSelected()) {
                         itemsToClear.add(item);
                         iterator.remove();
                     }
@@ -89,7 +97,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newItem = String.valueOf(addItemText.getText());
-                if (newItem.trim().isEmpty()){
+                if (newItem.trim().isEmpty()) {
                     return;
                 }
                 addToShoppingListDB(newItem);
@@ -99,7 +107,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         });
 
         shoppingListItems = new ArrayList<>();
-        getShoppingListItems();
+
         System.out.println("shoppingListItems.size(): " + shoppingListItems.size());
 
         // 初始化 RecyclerView
@@ -110,7 +118,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("SelectedItems", MODE_PRIVATE);
 
         // 创建适配器并设置到 RecyclerView
-        adapter = new SelectedItemsAdapter(shoppingListItems, sharedPreferences);
+        adapter = new SelectedItemsAdapter(shoppingList, sharedPreferences);
         recyclerView.setAdapter(adapter);
     }
 
@@ -209,7 +217,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
 
-                    Log.d("addToshoppingList","succeeded");
+                    Log.d("addToshoppingList", "succeeded");
                     // 将响应体转换为字符串
                     String responseData = response.body().string();
                     // 将字符串转换为JSONArray
@@ -250,29 +258,31 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("deleteall","successes");
+                    Log.d("deleteall", "successes");
                 } else {
                     // 请求失败的处理
-                    Log.d("deleteall","failed");
+                    Log.d("deleteall", "failed");
                 }
             }
 
         });
     }
 
-    private void clearSelectedItemsInDb(List<Item> itemsToClear){
+
+    private void clearSelectedItemsInDb(List<Item> itemsToClear) {
         System.out.print("clearSelectedItemsInDb called!");
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2:8080/api/clearSelectedItemsInDb";
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         String selectedItemsStr = "";
-        for (Item item : itemsToClear){
+        for (Item item : itemsToClear) {
             selectedItemsStr += (item.getId() + ",");
         }
         selectedItemsStr.substring(0, selectedItemsStr.length() - 1);
         JSONObject jsonObject = new JSONObject();
-        try {;
+        try {
+            ;
             jsonObject.put("itemsToClear", selectedItemsStr);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -294,7 +304,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("clearedSelectedFromShoppingList","succeeded");
+                    Log.d("clearedSelectedFromShoppingList", "succeeded");
                 } else {
                     Log.d("clearedSelectedFromShoppingList", "failed");
 
@@ -304,3 +314,4 @@ public class MyShoppingListActivity extends AppCompatActivity {
     }
 
 }
+
