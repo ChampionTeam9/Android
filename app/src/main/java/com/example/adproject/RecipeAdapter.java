@@ -18,7 +18,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private List<Recipe> mRecipeList; // 使用Recipe对象列表
 
-    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
     public void updateRecipes(List<Recipe> recipes) {
         System.out.println("updateRecipes Called");
         System.out.println("recipes.size(): " + recipes.size());
@@ -34,8 +33,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         this.mRecipeList.addAll(newRecipes); // 追加新数据
         notifyItemRangeInserted(startPosition, newRecipes.size()); // 仅通知追加的数据部分更新
     }
-
-    // 更新数据的方法保留，可能用于初次数据加载或完全刷新场景
 
     public interface OnItemClickListener {
         void onItemClick(Recipe recipe);

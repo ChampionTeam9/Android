@@ -78,9 +78,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public int getItemCount() {
         return ingredientsList.size();
     }
-    public List<String> getSelectedItems() {
-        return selectedItem;
-    }
+
 
     public List<String> getCheckedItemsWithText() {
         List<String> checkedItems = new ArrayList<>();

@@ -69,8 +69,6 @@ public class LoginFragment extends Fragment {
     private void login() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-
-        // 在这里实现您的登录逻辑
         // 检查用户名和密码是否有效
         if (isValidCredentials(username, password)) {
             // 登录成功，将用户名保存到 SharedPreferences 中
@@ -78,7 +76,6 @@ public class LoginFragment extends Fragment {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("username", username);
             editor.apply();
-
             // 启动 MyProfile Activity
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
@@ -89,8 +86,6 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        // 在这里实现您的验证逻辑，例如与后端服务器进行交互验证用户名和密码
-        // 这里仅作示例，总是返回 true，表示登录始终成功
         return true;
     }
 }
