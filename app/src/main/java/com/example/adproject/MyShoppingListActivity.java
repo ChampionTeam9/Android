@@ -67,11 +67,12 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newItem = String.valueOf(addItemText.getText());
+                if (newItem.trim().isEmpty()){
+                    return;
+                }
                 addToShoppingListDB(newItem);
-                shoppingListItems.clear();
-                getShoppingListItems();
-                adapter.setItems(shoppingListItems);
                 adapter.notifyDataSetChanged();
+                addItemText.setText("");
             }
         });
 
@@ -185,7 +186,23 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d("addToshoppingList", "succeeded");
+
+                    Log.d("addToshoppingList","succeeded");
+                    // 将响应体转换为字符串
+                    String responseData = response.body().string();
+                    // 将字符串转换为JSONArray
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        Item item = new Item();
+                        item.setId(jsonObject.optInt("id"));
+                        item.setItemName(jsonObject.optString("ingredientName"));
+                        item.setSelected(jsonObject.optBoolean("isChecked"));
+                        shoppingListItems.add(item);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
                     Log.d("addToshoppingList", "failed");
 
