@@ -103,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
         RecyclerView ingredientsRecyclerView = findViewById(R.id.recycler_ingredients);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipe.getIngredients());
-        Log.d("drecipein", String.valueOf(recipe.getIngredients().size()));
+        //Log.d("drecipein", String.valueOf(recipe.getIngredients().size()));
 
         ingredientsRecyclerView.setAdapter(ingredientsAdapter);
 

@@ -244,7 +244,6 @@ public class MyShoppingListActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                // 请求失败的处理
                 e.printStackTrace();
             }
 
