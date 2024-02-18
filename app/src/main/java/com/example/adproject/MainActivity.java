@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView usernameTextView = headerView.findViewById(R.id.nav_header_title); // 头部布局
-        MenuItem loginMenuItem = navigationView.getMenu().findItem(R.id.nav_login); // 假设菜单项的ID为nav_login
+        TextView usernameTextView = headerView.findViewById(R.id.nav_header_title);
+        MenuItem loginMenuItem = navigationView.getMenu().findItem(R.id.nav_login);
 
         noResultsText = findViewById(R.id.noResultsText);
         mAllRecipes = new ArrayList<>();
@@ -79,13 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
             usernameTextView.setText(username);
             loginMenuItem.setTitle("Logout");
-            loginMenuItem.setIcon(R.drawable.ic_logout); // 假设您有一个表示登出的图标资源
+            loginMenuItem.setIcon(R.drawable.ic_logout);
         } else {
             // 用户未登录，将标题设置为"Guest"，菜单项为"Login"
             Log.d("login", "fail");
             usernameTextView.setText("Guest");
             loginMenuItem.setTitle("Login");
-            loginMenuItem.setIcon(R.drawable.ic_login); // 假设您有一个表示登录的图标资源
+            loginMenuItem.setIcon(R.drawable.ic_login);
         }
 
         // 设置 NavigationView 的选择监听器
@@ -190,12 +190,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // If no results, display no results message
+
         if (filteredRecipes.size() == 0){
             noResultsText.setVisibility(View.VISIBLE);
         }
 
-        // 更新适配器数据，但不修改mRecipes或mAllRecipes
+
         mAdapter.updateRecipes(filteredRecipes);
     }
     private void getSavedRecipes() {
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                             Item item=new Item(itemName,isChecked,id);
                             itemList.add(item);
                         }
-                        // 在UI线程中更新UI，显示购物清单列表或进行其他操作
+                        // 在UI线程中更新UI
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 请求失败的处理，例如显示错误消息
+                    // 请求失败的处理
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

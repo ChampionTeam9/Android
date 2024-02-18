@@ -29,7 +29,6 @@ public class MyRecipeActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
     private List<Recipe> mRecipes = new ArrayList<>();
-    private Button backbutton;
     private TextView noRecipesText;
 
     @Override
@@ -59,9 +58,8 @@ public class MyRecipeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Recipe recipe) {
                 // 处理RecyclerView中的项目点击事件
-                // 这里可以打开一个新的Activity，显示食谱的详细信息
                 Intent detailIntent = new Intent(MyRecipeActivity.this, DetailActivity.class);
-                detailIntent.putExtra("Recipe", recipe); // 确保Recipe类实现了Parcelable接口
+                detailIntent.putExtra("Recipe", recipe);
                 startActivity(detailIntent);
             }
         });
