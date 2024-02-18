@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -42,6 +43,8 @@ public class MyShoppingListActivity extends AppCompatActivity {
     private List<String> myShoppingList;
     private SharedPreferences sharedPreferences;
     private Button Btn;
+    private Button addButton;
+    private EditText addItemText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,27 @@ public class MyShoppingListActivity extends AppCompatActivity {
         Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(MyShoppingListActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+        addButton = findViewById(R.id.addButton);
+        addItemText = findViewById(R.id.addItemText);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newItem = String.valueOf(addItemText.getText());
+                addToShoppingListDB(newItem);
+                shoppingListItems.clear();
+                getShoppingListItems();
+                adapter.setItems(shoppingListItems);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         shoppingListItems = new ArrayList<>();
         getShoppingListItems();
         System.out.println("shoppingListItems.size(): " + shoppingListItems.size());
@@ -132,6 +150,48 @@ public class MyShoppingListActivity extends AppCompatActivity {
                 }
             }
 
+        });
+    }
+
+    public void addToShoppingListDB(String newItem)
+    {
+        System.out.print("addToShoppingListDB called!");
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://10.0.2.2:8080/api/addItemToShoppingList";
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+            String username = sharedPreferences.getString("username", null);
+            jsonObject.put("newItem", newItem);
+            jsonObject.put("username", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("json!!!",jsonObject.toString());
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("addToshoppingList","succeeded");
+                } else {
+                    Log.d("addToshoppingList","failed");
+
+                }
+            }
         });
     }
 
