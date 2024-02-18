@@ -154,4 +154,8 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
             }
         });
     }
+    public void setItems(List<Item> newItems) {
+        selectedItems = newItems;
+        notifyDataSetChanged(); // Notify the adapter that the dataset has changed
+    }
 }
