@@ -51,8 +51,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int currPosition = holder.getAdapterPosition();
                 String ingredientToAdd = holder.ingredientText.getText().toString().trim();
+
                 positionToIsChecked.put(currPosition, isChecked);
                 positionToName.put(currPosition, ingredientToAdd);
+
+                // 打印被点击的CheckBox的名字
+                Log.d("Checkbox Clicked", ingredientToAdd);
+                if (isChecked) {
+                    // 如果checkbox被选中，添加到selectedItem列表中
+                    if (!selectedItem.contains(ingredientToAdd)) {
+                        selectedItem.add(ingredientToAdd);
+                    }
+                } else {
+                    // 如果checkbox被取消选中，从selectedItem列表中移除
+                    selectedItem.remove(ingredientToAdd);
+                }
             }
         });
 
@@ -82,13 +95,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public List<String> getCheckedItemsWithText() {
         List<String> checkedItems = new ArrayList<>();
-        for (int i = 0; i < ingredientsList.size(); i++) {
-            if (positionToIsChecked.containsKey(i) && positionToIsChecked.get(i)) {
-                String ingredient = positionToName.get(i);
-                checkedItems.add(ingredient);
-            }
-        }
-        return checkedItems;
+
+//        for (int i = 0; i < ingredientsList.size(); i++) {
+//            if (positionToIsChecked.containsKey(i) && positionToIsChecked.get(i)) {
+//                String ingredient = positionToName.get(i);
+//                Log.d("check item",ingredient);
+//                checkedItems.add(ingredient);
+//            }
+//        }
+        return selectedItem;
+       // return checkedItems;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
