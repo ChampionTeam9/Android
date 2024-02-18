@@ -110,39 +110,4 @@ public class ShoppingListActivity extends AppCompatActivity {
     }
 
 
-//    private void sendSelectedItemsToServer(List<String> selectedItems) {
-//        // 创建 Retrofit 实例
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://your-server-url.com/") // 替换为您的服务器 URL
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        // 创建服务接口实例
-//        ApiService apiService = retrofit.create(ApiService.class);
-//
-//        // 创建请求体
-//        SelectedItemsRequestBody requestBody = new SelectedItemsRequestBody(selectedItems);
-//
-//        // 发送网络请求
-//        Call<Void> call = apiService.sendSelectedItems(requestBody);
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    // 请求成功，处理响应
-//                    Log.d("Send Selected Items", "Successfully sent selected items to server");
-//                } else {
-//                    // 请求失败，处理错误
-//                    Log.e("Send Selected Items", "Failed to send selected items to server");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                // 请求失败，处理错误
-//                Log.e("Send Selected Items", "Failed to send selected items to server: " + t.getMessage());
-//            }
-//        });
-//    }
-
 }

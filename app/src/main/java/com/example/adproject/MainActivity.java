@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -235,20 +236,81 @@ public class MainActivity extends AppCompatActivity {
                     // 将字符串转换为JSONArray
                     try {
                         JSONArray jsonArray = new JSONArray(responseData);
+                        // 创建一个列表来存储解析后的食谱对象
+                        List<Recipe> recipes = new ArrayList<>();
                         // 遍历JSON数组中的每个对象
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject recipeObject = jsonArray.getJSONObject(i);
                             // 从每个JSONObject中获取食谱的详细信息
-                            String recipeName = recipeObject.getString("name");
-                            // 根据需要进行其他操作...
+                            String recipeName = recipeObject.optString("name", "");
+                            String description = recipeObject.optString("description", "");
+                            String image = recipeObject.optString("image", "");
+                            double rating = recipeObject.optDouble("rating", 0.0);
+                            int numberOfRating = recipeObject.optInt("numberOfRating", 0);
+                            int numberOfSaved = recipeObject.optInt("numberOfSaved", 0);
+                            String submittedDate = recipeObject.optString("submittedDate", "");
+                            JSONArray tagsArray = recipeObject.optJSONArray("tags");
+                            List<String> tagsList = new ArrayList<>();
+                            if (tagsArray != null) {
+                                for (int j = 0; j < tagsArray.length(); j++) {
+                                    tagsList.add(tagsArray.optString(j, ""));
+                                }
+                            }
+                            int servings = recipeObject.optInt("servings", 0);
+                            int preparationTime = recipeObject.optInt("preparationTime", 0);
+                            JSONArray stepsArray = recipeObject.optJSONArray("steps");
+                            List<String> stepsList = new ArrayList<>();
+                            if (stepsArray != null) {
+                                for (int j = 0; j < stepsArray.length(); j++) {
+                                    stepsList.add(stepsArray.optString(j, ""));
+                                }
+                            }
+                            int healthScore = recipeObject.optInt("healthScore", 0);
+                            double calories = recipeObject.optDouble("calories", 0.0);
+                            double protein = recipeObject.optDouble("protein", 0.0);
+                            double carbohydrate = recipeObject.optDouble("carbohydrate", 0.0);
+                            double sugar = recipeObject.optDouble("sugar", 0.0);
+                            double sodium = recipeObject.optDouble("sodium", 0.0);
+                            double fat = recipeObject.optDouble("fat", 0.0);
+                            double saturatedFat = recipeObject.optDouble("saturatedFat", 0.0);
+                            String username = recipeObject.optString("username", "");
+                            JSONArray ingredientsArray = recipeObject.optJSONArray("ingredients");
+                            List<String> ingredientsList = new ArrayList<>();
+                            if (ingredientsArray != null) {
+                                for (int j = 0; j < ingredientsArray.length(); j++) {
+                                    ingredientsList.add(ingredientsArray.optString(j, ""));
+                                }
+                            }
+                            // 创建 Recipe 对象并设置其属性
+                            Recipe recipe = new Recipe();
+                            recipe.setName(recipeName);
+                            recipe.setDescription(description);
+                            recipe.setImage(image);
+                            recipe.setRating(rating);
+                            recipe.setNumberOfRating(numberOfRating);
+                            recipe.setNumberOfSaved(numberOfSaved);
+                            recipe.setSubmittedDate(LocalDate.parse(submittedDate));
+                            recipe.setTags(tagsList);
+                            recipe.setServings(servings);
+                            recipe.setPreparationTime(preparationTime);
+                            recipe.setSteps(stepsList);
+                            recipe.setHealthScore(healthScore);
+                            recipe.setCalories(calories);
+                            recipe.setProtein(protein);
+                            recipe.setCarbohydrate(carbohydrate);
+                            recipe.setSugar(sugar);
+                            recipe.setSodium(sodium);
+                            recipe.setFat(fat);
+                            recipe.setSaturatedFat(saturatedFat);
+                            recipe.setUsername(username);
+                            recipe.setIngredients(ingredientsList);
+                            recipes.add(recipe);
                         }
-                        // 在UI线程中更新UI，显示食谱列表或进行其他操作
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent(MainActivity.this, MyRecipeActivity.class);
-                                intent.putExtra("recipeList", responseData);
-                                Log.d("recipes",responseData);// 将响应数据作为JSON字符串传递
+                                intent.putExtra("recipeList", (Serializable) recipes);
                                 startActivity(intent);
                             }
                         });
@@ -256,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    // 请求失败的处理，例如显示错误消息
+                    // 请求失败的处理
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -265,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             }
+
         });
 
 
