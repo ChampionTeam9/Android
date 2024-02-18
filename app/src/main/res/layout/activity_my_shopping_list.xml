@@ -43,11 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="4dp" />
-
     <Button
-        android:id="@+id/back_to_home"
+        android:id="@+id/delete_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back to home page"/>
+        android:text="Clear all"/>
 
 </LinearLayout>
