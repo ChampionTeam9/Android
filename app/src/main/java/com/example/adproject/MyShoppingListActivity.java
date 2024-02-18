@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
     private List<String> myShoppingList;
     private SharedPreferences sharedPreferences;
     private Button clearAll;
+    private Button clearSelectedButton;
     private Button addButton;
     private EditText addItemText;
 
@@ -52,6 +54,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_shopping_list);
 
         clearAll = findViewById(R.id.delete_all);
+        clearSelectedButton = findViewById(R.id.clearSelectedButton);
         addButton = findViewById(R.id.addButton);
         addItemText = findViewById(R.id.addItemText);
 
@@ -60,9 +63,28 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteAll();
-                finish();
+                shoppingListItems.clear();
+                adapter.notifyDataSetChanged();
             }
         });
+
+        clearSelectedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Item> itemsToClear = new ArrayList<>();
+                Iterator<Item> iterator = shoppingListItems.iterator();
+                while (iterator.hasNext()){
+                    Item item = iterator.next();
+                    if (item.isSelected()){
+                        itemsToClear.add(item);
+                        iterator.remove();
+                    }
+                }
+                clearSelectedItemsInDb(itemsToClear);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,6 +258,49 @@ public class MyShoppingListActivity extends AppCompatActivity {
                 }
             }
 
+        });
+    }
+
+    private void clearSelectedItemsInDb(List<Item> itemsToClear){
+        System.out.print("clearSelectedItemsInDb called!");
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://10.0.2.2:8080/api/clearSelectedItemsInDb";
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        String selectedItemsStr = "";
+        for (Item item : itemsToClear){
+            selectedItemsStr += (item.getId() + ",");
+        }
+        selectedItemsStr.substring(0, selectedItemsStr.length() - 1);
+        JSONObject jsonObject = new JSONObject();
+        try {;
+            jsonObject.put("itemsToClear", selectedItemsStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("json", jsonObject.toString());
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("clearedSelectedFromShoppingList","succeeded");
+                } else {
+                    Log.d("clearedSelectedFromShoppingList", "failed");
+
+                }
+            }
         });
     }
 

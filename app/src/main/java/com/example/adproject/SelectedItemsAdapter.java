@@ -158,4 +158,5 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
         selectedItems = newItems;
         notifyDataSetChanged(); // Notify the adapter that the dataset has changed
     }
+
 }
