@@ -14,12 +14,15 @@ import android.widget.Toast;
 import com.example.adproject.DetailActivity;
 import com.example.adproject.Recipe;
 import com.example.adproject.RecipeAdapter;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MyRecipeActivity extends AppCompatActivity {
@@ -41,54 +44,34 @@ public class MyRecipeActivity extends AppCompatActivity {
         noRecipesText = findViewById(R.id.noRecipesText);
 
         // 从Intent中获取传递的JSON字符串
-        String recipeListJson = getIntent().getStringExtra("recipeList");
+        List<Recipe> recipes = (List<Recipe>) getIntent().getSerializableExtra("recipeList");
+
 
         // 解析JSON数据并更新RecyclerView
-        parseRecipes(recipeListJson);
+        parseRecipes(recipes);
     }
 
-    private void parseRecipes(String recipeListJson) {
-        try {
-            // 将JSON字符串转换为JSONArray
-            JSONArray jsonArray = new JSONArray(recipeListJson);
+    private void parseRecipes(List<Recipe> recipes) {
 
-            // 遍历JSONArray，解析每个JSONObject并创建Recipe对象
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Recipe recipe = new Recipe();
 
-                // 从JSONObject中提取Recipe对象的属性值
-                recipe.setName(jsonObject.getString("name"));
-                recipe.setDescription(jsonObject.getString("description"));
-                // 继续提取其他属性...
-
-                // 将Recipe对象添加到mRecipes列表中
-                mRecipes.add(recipe);
+        // 创建并设置适配器
+        mAdapter = new RecipeAdapter(recipes, new RecipeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Recipe recipe) {
+                // 处理RecyclerView中的项目点击事件
+                // 这里可以打开一个新的Activity，显示食谱的详细信息
+                Intent detailIntent = new Intent(MyRecipeActivity.this, DetailActivity.class);
+                detailIntent.putExtra("Recipe", recipe); // 确保Recipe类实现了Parcelable接口
+                startActivity(detailIntent);
             }
+        });
 
-            // 创建并设置适配器
-            mAdapter = new RecipeAdapter(mRecipes, new RecipeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Recipe recipe) {
-                    // 处理RecyclerView中的项目点击事件
-                    // 这里可以打开一个新的Activity，显示食谱的详细信息
-                    Intent detailIntent = new Intent(MyRecipeActivity.this, DetailActivity.class);
-                    detailIntent.putExtra("Recipe", recipe); // 确保Recipe类实现了Parcelable接口
-                    startActivity(detailIntent);
-                }
-            });
+        // 将适配器设置到RecyclerView中
+        mRecyclerView.setAdapter(mAdapter);
 
-            // 将适配器设置到RecyclerView中
-            mRecyclerView.setAdapter(mAdapter);
-
-            if (mRecipes.size() == 0){
-                noRecipesText.setVisibility(View.VISIBLE);
-            }
-
-        } catch (JSONException e) {
-            // JSON解析失败，显示错误消息
-            Toast.makeText(this, "Failed to parse recipes", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+        if (mRecipes.size() == 0){
+            noRecipesText.setVisibility(View.VISIBLE);
         }
+
     }
 }

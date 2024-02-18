@@ -79,7 +79,7 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
                     if (position != RecyclerView.NO_POSITION) {
                         Item item = selectedItems.get(position);
                         item.setSelected(isChecked);
-                        saveSelectedState(item.getItemName(), isChecked);
+                        saveSelectedState(item.getItemName(), isChecked,item.getId());
                         if (isChecked) {
                             checkboxText.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             item.setSelected(true);
@@ -109,12 +109,14 @@ public class SelectedItemsAdapter extends RecyclerView.Adapter<SelectedItemsAdap
         }
     }
 
-    private void saveSelectedState(String itemName, boolean isSelected) {
+    private void saveSelectedState(String itemName, boolean isSelected, int id) {
         // 保存选中状态到 SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(itemName, isSelected);
+        editor.putBoolean(itemName + "_isSelected", isSelected);
+        editor.putInt(itemName + "_id", id);
         editor.apply();
     }
+
     public void updateIsChecked(Boolean ischecked,int id)
     {
         OkHttpClient client = new OkHttpClient();

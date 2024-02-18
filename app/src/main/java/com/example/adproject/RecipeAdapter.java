@@ -81,8 +81,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Make sure the layout name here matches your XML file name
         View recipeView = inflater.inflate(R.layout.recipe_item, parent, false);
 
         return new ViewHolder(recipeView, onItemClickListener);
