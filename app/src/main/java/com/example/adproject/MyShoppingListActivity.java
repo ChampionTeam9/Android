@@ -55,6 +55,14 @@ public class MyShoppingListActivity extends AppCompatActivity {
         addButton = findViewById(R.id.addButton);
         addItemText = findViewById(R.id.addItemText);
 
+        //getShoppingListItems();
+// 检查是否有传递的数据
+        Intent intent = getIntent();
+        ArrayList<Item> shoppingList = null;
+        if (intent != null && intent.hasExtra("shoppingList")) {
+            // 从Intent中获取传递的数据列表
+            shoppingList = intent.getParcelableArrayListExtra("shoppingList");
+        }
 
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +75,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newItem = String.valueOf(addItemText.getText());
-                if (newItem.trim().isEmpty()){
+                if (newItem.trim().isEmpty()) {
                     return;
                 }
                 addToShoppingListDB(newItem);
@@ -77,7 +85,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         });
 
         shoppingListItems = new ArrayList<>();
-        getShoppingListItems();
+
         System.out.println("shoppingListItems.size(): " + shoppingListItems.size());
 
         // 初始化 RecyclerView
@@ -88,154 +96,154 @@ public class MyShoppingListActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("SelectedItems", MODE_PRIVATE);
 
         // 创建适配器并设置到 RecyclerView
-        adapter = new SelectedItemsAdapter(shoppingListItems, sharedPreferences);
+        adapter = new SelectedItemsAdapter(shoppingList, sharedPreferences);
         recyclerView.setAdapter(adapter);
     }
 
-    private void getShoppingListItems() {
-        System.out.println("getShoppingListItems called");
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2:8080/api/getShoppingList";
+        private void getShoppingListItems () {
+            System.out.println("getShoppingListItems called");
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://10.0.2.2:8080/api/getShoppingList";
 
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
-            String username = sharedPreferences.getString("username", null);
-            jsonObject.put("username", username);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.d("jsonSL", jsonObject.toString());
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // 请求失败的处理
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+                String username = sharedPreferences.getString("username", null);
+                jsonObject.put("username", username);
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.d("jsonSL", jsonObject.toString());
+            RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // 将响应体转换为字符串
-                    String responseData = response.body().string();
-                    // 将字符串转换为JSONArray
-                    try {
-                        JSONArray jsonArray = new JSONArray(responseData);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject itemObject = jsonArray.getJSONObject(i);
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    // 请求失败的处理
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        // 将响应体转换为字符串
+                        String responseData = response.body().string();
+                        // 将字符串转换为JSONArray
+                        try {
+                            JSONArray jsonArray = new JSONArray(responseData);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject itemObject = jsonArray.getJSONObject(i);
+                                Item item = new Item();
+                                item.setId(itemObject.optInt("id"));
+                                item.setItemName(itemObject.optString("ingredientName"));
+                                item.setSelected(itemObject.optBoolean("isChecked"));
+                                shoppingListItems.add(item);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // 请求失败的处理
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MyShoppingListActivity.this, "Failed to retrieve data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+            });
+        }
+
+        public void addToShoppingListDB (String newItem){
+            System.out.print("addToShoppingListDB called!");
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://10.0.2.2:8080/api/addItemToShoppingList";
+
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+                String username = sharedPreferences.getString("username", null);
+                jsonObject.put("newItem", newItem);
+                jsonObject.put("username", username);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("json!!!", jsonObject.toString());
+            RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    // 请求失败的处理
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+
+                        Log.d("addToshoppingList", "succeeded");
+                        // 将响应体转换为字符串
+                        String responseData = response.body().string();
+                        // 将字符串转换为JSONArray
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
                             Item item = new Item();
-                            item.setId(itemObject.optInt("id"));
-                            item.setItemName(itemObject.optString("ingredientName"));
-                            item.setSelected(itemObject.optBoolean("isChecked"));
+                            item.setId(jsonObject.optInt("id"));
+                            item.setItemName(jsonObject.optString("ingredientName"));
+                            item.setSelected(jsonObject.optBoolean("isChecked"));
                             shoppingListItems.add(item);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    } else {
+                        Log.d("addToshoppingList", "failed");
+
                     }
-                } else {
-                    // 请求失败的处理
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MyShoppingListActivity.this, "Failed to retrieve data", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 }
-            }
-
-        });
-    }
-
-    public void addToShoppingListDB(String newItem) {
-        System.out.print("addToShoppingListDB called!");
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2:8080/api/addItemToShoppingList";
-
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
-            String username = sharedPreferences.getString("username", null);
-            jsonObject.put("newItem", newItem);
-            jsonObject.put("username", username);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            });
         }
-        Log.d("json!!!", jsonObject.toString());
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // 请求失败的处理
-                e.printStackTrace();
-            }
+        private void deleteAll () {
+            OkHttpClient client = new OkHttpClient();
+            String url = "http://10.0.2.2:8080/api/deleteAll";
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
 
-                    Log.d("addToshoppingList","succeeded");
-                    // 将响应体转换为字符串
-                    String responseData = response.body().string();
-                    // 将字符串转换为JSONArray
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        Item item = new Item();
-                        item.setId(jsonObject.optInt("id"));
-                        item.setItemName(jsonObject.optString("ingredientName"));
-                        item.setSelected(jsonObject.optBoolean("isChecked"));
-                        shoppingListItems.add(item);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        Log.d("deleteall", "successes");
+                    } else {
+                        // 请求失败的处理
+                        Log.d("deleteall", "failed");
                     }
-
-                } else {
-                    Log.d("addToshoppingList", "failed");
-
                 }
-            }
-        });
+
+            });
+        }
+
     }
-
-    private void deleteAll() {
-        OkHttpClient client = new OkHttpClient();
-        String url = "http://10.0.2.2:8080/api/deleteAll";
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Log.d("deleteall","successes");
-                } else {
-                    // 请求失败的处理
-                    Log.d("deleteall","failed");
-                }
-            }
-
-        });
-    }
-
-}
