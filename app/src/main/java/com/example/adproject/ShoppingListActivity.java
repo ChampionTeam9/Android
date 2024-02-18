@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,11 +54,10 @@ public class ShoppingListActivity extends AppCompatActivity {
             addselectedBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<String> selectedItems = adapter.getSelectedItems();
-                    Log.d("Selected Items", selectedItems.toString());
-                    addToShoppingListDB(selectedItems);
+                    List<String> checkedItems = adapter.getCheckedItemsWithText();
+                    Log.d("Checked Items", checkedItems.toString());
+                    addToShoppingListDB(checkedItems);
                     Intent intent = new Intent(ShoppingListActivity.this, MyShoppingListActivity.class);
-                    intent.putStringArrayListExtra("SELECTED_ITEMS", (ArrayList<String>) selectedItems);
                     startActivity(intent);
                 }
             });
@@ -75,8 +76,10 @@ public class ShoppingListActivity extends AppCompatActivity {
         JSONObject jsonObject = new JSONObject();
         String selectedItemsStr = String.join(",", selectedItems);
         try {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
+            String username = sharedPreferences.getString("username", null);
             jsonObject.put("selectedItems", selectedItemsStr);
-            jsonObject.put("username", "member1Username");
+            jsonObject.put("username", username);
         } catch (JSONException e) {
             e.printStackTrace();
         }
