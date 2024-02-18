@@ -42,7 +42,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
     private List<Item> selectedItems;
     private List<String> myShoppingList;
     private SharedPreferences sharedPreferences;
-    private Button Btn;
+    private Button clearAll;
     private Button addButton;
     private EditText addItemText;
 
@@ -51,19 +51,18 @@ public class MyShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_shopping_list);
 
-        Btn = findViewById(R.id.back_to_home);
-        Btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MyShoppingListActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
+        clearAll = findViewById(R.id.delete_all);
         addButton = findViewById(R.id.addButton);
         addItemText = findViewById(R.id.addItemText);
 
+
+        clearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAll();
+                finish();
+            }
+        });
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,11 +102,11 @@ public class MyShoppingListActivity extends AppCompatActivity {
         try {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
             String username = sharedPreferences.getString("username", null);
-            jsonObject.put("username",username);
+            jsonObject.put("username", username);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("jsonSL",jsonObject.toString());
+        Log.d("jsonSL", jsonObject.toString());
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         Request request = new Request.Builder()
                 .url(url)
@@ -120,6 +119,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
                 // 请求失败的处理
                 e.printStackTrace();
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
@@ -154,8 +154,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         });
     }
 
-    public void addToShoppingListDB(String newItem)
-    {
+    public void addToShoppingListDB(String newItem) {
         System.out.print("addToShoppingListDB called!");
         OkHttpClient client = new OkHttpClient();
         String url = "http://10.0.2.2:8080/api/addItemToShoppingList";
@@ -170,7 +169,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("json!!!",jsonObject.toString());
+        Log.d("json!!!", jsonObject.toString());
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         Request request = new Request.Builder()
                 .url(url)
@@ -187,6 +186,7 @@ public class MyShoppingListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+
                     Log.d("addToshoppingList","succeeded");
                     // 将响应体转换为字符串
                     String responseData = response.body().string();
@@ -202,49 +202,41 @@ public class MyShoppingListActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                 } else {
-                    Log.d("addToshoppingList","failed");
+                    Log.d("addToshoppingList", "failed");
 
                 }
             }
         });
     }
 
-//    private Map<String, Boolean> loadSelectedItems() {
-//        // 从 SharedPreferences 中加载保存的选中状态
-//        Map<String, Boolean> selectedItemsMap = new HashMap<>();
-//        Map<String, ?> allEntries = sharedPreferences.getAll();
-//        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-//            selectedItemsMap.put(entry.getKey(), (Boolean) entry.getValue());
-//        }
-//        return selectedItemsMap;
-//    }
+    private void deleteAll() {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://10.0.2.2:8080/api/deleteAll";
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
 
-//    private void saveSelectedItems(Map<String, Boolean> selectedItemsMap) {
-//        // 保存选中状态到 SharedPreferences
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        for (Map.Entry<String, Boolean> entry : selectedItemsMap.entrySet()) {
-//            editor.putBoolean(entry.getKey(), entry.getValue());
-//        }
-//        editor.apply();
-//    }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 请求失败的处理
+                e.printStackTrace();
+            }
 
-//    private List<Item> generateShoppingListItems(Map<String, Boolean> selectedItemsMap) {
-//        // 生成购物清单列表项
-//        List<Item> shoppingListItems = new ArrayList<>();
-//
-//        // 根据您的具体需求，初始化 selectedItems 变量
-//        if (selectedItemsMap != null) {
-//            for (Map.Entry<String, Boolean> entry : selectedItemsMap.entrySet()) {
-//                String itemName = entry.getKey();
-//                boolean isSelected = entry.getValue();
-//
-//                // 这里需要替换为您的 Item 类构造函数的参数
-//                // 如果您的 Item 类需要 id 参数，请确保在这里提供一个 id
-//                Item item = new Item(itemName, isSelected,id);
-//                shoppingListItems.add(item);
-//            }
-//        }
-//        return shoppingListItems;
-//    }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.d("deleteall","successes");
+                } else {
+                    // 请求失败的处理
+                    Log.d("deleteall","failed");
+                }
+            }
+
+        });
+    }
+
 }
