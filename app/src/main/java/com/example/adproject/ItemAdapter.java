@@ -95,17 +95,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public List<String> getCheckedItemsWithText() {
         List<String> checkedItems = new ArrayList<>();
-
-//        for (int i = 0; i < ingredientsList.size(); i++) {
-//            if (positionToIsChecked.containsKey(i) && positionToIsChecked.get(i)) {
-//                String ingredient = positionToName.get(i);
-//                Log.d("check item",ingredient);
-//                checkedItems.add(ingredient);
-//            }
-//        }
-        return selectedItem;
-       // return checkedItems;
+        for (int i = 0; i < ingredientsList.size(); i++) {
+            if (positionToIsChecked.containsKey(i) && positionToIsChecked.get(i)) {
+                String ingredient = positionToName.get(i);
+                Log.d("Checked item", ingredient);
+                checkedItems.add(ingredient);
+            }
+        }
+        return checkedItems;
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkbox;

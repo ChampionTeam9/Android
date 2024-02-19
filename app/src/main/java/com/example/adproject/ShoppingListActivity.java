@@ -74,7 +74,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
-        String selectedItemsStr = String.join(",", selectedItems);
+        String selectedItemsStr = String.join("/", selectedItems);
         Log.d("shopping", selectedItemsStr);
         try {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_pref", Context.MODE_PRIVATE);
